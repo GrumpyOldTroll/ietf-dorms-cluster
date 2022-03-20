@@ -116,12 +116,12 @@ The "Introduction" sections of the documents describing TESLA {{RFC4082}}, and T
  * Asymmetric per-packet signatures can handle only very low bit-rates because of the transport and computational overhead associated with signature transmission and verification.
  * An asymmetric signature of a larger message comprising multiple packets requires reliable receipt of all such packets, something that cannot be guaranteed in a timely manner even for protocols that do provide reliable delivery, and the retransmission of which may anyway exceed the useful lifetime for data formats that can otherwise tolerate some degree of loss.
 
-Aymmetric Manifest-Based Integrity (AMBI) defines a method for receivers or middle boxes to cryptographically authenticate and verify the integrity of a stream of packets by comparing the data packets to a stream of packet "manifests" (described in {{ref-manifest}}) received via an out-of-band communication channel that provides authentication and verifiable integrity.
+Asymmetric Manifest-Based Integrity (AMBI) defines a method for receivers or middle boxes to cryptographically authenticate and verify the integrity of a stream of packets by comparing the data packets to a stream of packet "manifests" (described in {{ref-manifest}}) received via an out-of-band communication channel that provides authentication and verifiable integrity.
 
-Each manifest contains a message digest (described in {{ref-digests}}) for each packet in a sequence of packets from the data stream, hereafter called a "packet digest".
-The packet digest incorporates a cryptographic hash of the packet contents and some identifying data from the packet, according to a defined digest profile for the data stream.
+Each manifest contains a cryptographic hash value for each packet in a sequence of packets from the data stream, hereafter called a "packet digest".
+The packet digest is computed from a pseudo header that includes the packet contents as well as a manifest stream identifier. This happens according to a defined digest profile (described in {{ref-profile}}) for the data stream.
 
-Upon receipt of a packet digest inside a manifest conveyed in a secure channel and verification that the packet digest of a received data packet matches, the receiver has proof of the integrity of the contents of the data packet corresponding to that digest.
+Upon receipt of a packet digest inside a manifest conveyed in a secure channel and verification that it matches the hash calculated from a received multicast data packet, the receiver has proof of the integrity of that data packet.
 
 This document defines the "ietf-ambi" YANG {{RFC7950}} model in {{ref-yang}} as an extension of the "ietf-dorms" model defined in {{I-D.draft-ietf-mboned-dorms}}.
 Also defined are new URI schemes for transport of manifests over TLS or DTLS, and a new media type for transport of manifests over HTTPS.
@@ -294,115 +294,8 @@ This does not prevent the transmission of packets out of order according to thei
 
 For receiver applications, the time that the original packet was received from the network SHOULD be made available to the receiving application.
 
-## Packet Digests {#ref-digests}
-
-### Digest Profile {#ref-profile}
-
-A packet digest is a message digest for a data packet, built according to a digest profile defined by the sender.
-
-The digest profile is defined by the sender, and specifies:
-
-  1. A cryptographically secure hash algorithm (REQUIRED)
-  2. A manifest stream identifier
-  3. Whether to hash the IP payload or the UDP payload. (see {{payload-type}})
-
-The hash algorithm is applied to a pseudoheader followed by the packet payload, as determined by the digest profile.
-The computed hash value is the packet digest.
-
-TBD: As recommended by <https://tools.ietf.org/html/rfc7696#section-2.2>, a companion document containing the mandatory-to-implement cipher suite should also be published separately and referenced by this document.
-
-#### Payload Type {#payload-type}
-
-##### UDP vs. IP payload validation
-
-When the manifest definition is at the UDP layer, it applies only to packets with IP protocol of UDP (0x11) and the payload used for calculating the packet digest includes only the UDP payload with length as the number of UDP payload octets, as calculated by subtracting the size of the UDP header from the UDP payload length.
-
-When the manifest definition is at the IP layer, the payload used for calculating the packet digest includes the full IP payload of the data packets in the (S,G).
-There is no restriction on the IP protocols that can be authenticated.
-The length field in the pseudoheader is calculated by subtracting the IP Header Length from the IP length, and is equal to the number of octets in the payload for the digest calculation.
-
-##### Motivation
-
-Full IP payloads often aren't available to receivers without extra privileges on end user operating systems, so it's useful to provide a way to authenticate only the UDP payload, which is often the only portion of the packet available to many receiving applications.
-
-However, for some use cases a full IP payload is appropriate.
-For example, when retrofitting some existing protocols, some packets may be predictable or frequently repeated.
-Use of an IPSec Authentication Header {{RFC4302}} is one way to disambiguate such packets.
-Even though the shared secret means the Authentication Header can't itself be used to authenticate the packet contents, the sequence number in the Authentication Header can ensure that specific packets are not repeated at the IP layer, and so it's useful for AMBI to have the capability to authenticate such packets.
-
-Another example: some services might need to authenticate the UDP options {{I-D.ietf-tsvwg-udp-options}}.
-When using the UDP payload, the UDP options would not be part of the authenticated payload, but would be included when using the IP payload type.
-
-Lastly, since (S,G) subscription operates at the IP layer, it's possible that some non-UDP protocols will need to be authenticated, and the IP layer allows for this.
-However, most user-space transport applications are expected to use the UDP layer authentication.
-
-### Pseudoheader
-
-When calculating the hash for the packet digest, the hash algorithm is applied to a pseudoheader followed by the payload from the packet.
-The complete sequence of octets used to calculate the hash is structured as follows:
-
-~~~
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|         Source Address (32 bits IPv4/128 bits IPv6)           |
-|                             ...                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Destination Address (32 bits IPv4/128 bits IPv6)        |
-|                             ...                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|     Zeroes    |   Protocol    |            Length             |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Source Port          |        Destination Port       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                     Manifest Identifier                       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                        Payload Data                           |
-|                             ...                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-
-#### Source Address
-
-The IPv4 or IPv6 source address of the packet.
-
-#### Destination Address
-
-The IPv4 or IPv6 destination address of the packet.
-
-#### Zeroes
-
-All bits set to 0.
-
-#### Protocol
-
-The IP Protocol field from IPv4, or the Next Header field for IPv6.
-When using UDP-layer authentication, this value is always UDP (0x11) but for IP-layer authentication it can vary per-packet.
-
-#### Length
-
-The length in octets of the Payload Data field, expressed as an unsigned 16-bit integer.
-
-#### Source Port
-
-The source port of the packet.
-Zeroes if using IP-layer authentication for a non-UDP protocol.
-
-#### Destination Port
-
-The UDP destination port of the packet.
-Zeroes if using IP-layer authentication for a non-UDP protocol.
-
-#### Manifest Identifier
-
-The 32-bit identifier for the manifest stream.
-
-#### Payload Data  {#payload}
-
-The payload data includes either the IP payload or the UDP payload, as indicated by the digest profile.
-
 ## Manifests {#ref-manifest}
-
+Each manifest has the following format:
 ### Manifest Layout {#manifest-layout}
 
 ~~~
@@ -445,7 +338,7 @@ Each packet in the data stream increases this value by 1.
 
 It's RECOMMENDED to expire the manifest stream and start a new stream for the data packets before a sequence number wrap is necessary.
 
-Note: for redundancy, especially if using a manifest stream with unreliable transport, successive manifests MAY provide duplicates of the same packet digest with the same packet sequence number, using overapping sets of packet sequence numbers.
+Note: for redundancy, especially if using a manifest stream with unreliable transport, successive manifests MAY provide duplicates of the same packet digest with the same packet sequence number, using overlapping sets of packet sequence numbers.
 When received, these reset the hold timer for the listed packet digests.
 
 #### T bit (TLVs Present)
@@ -468,15 +361,15 @@ These may be extended by future specifications.
 
 These are composed of 3 fields:
 
- * Type: an 8-bit unsigned integer indicating the type.  Type values in 0-127 have an 8-bit length, and type values in 128-255 have a 16-bit length.
- * Length: a 8-bit or 16-bit unsigned integer indicating the length of the value
- * Value: a value with semantics defined by the Type field.
+* Type: an 8-bit unsigned integer indicating the type.  Type values in 0-127 have an 8-bit length, and type values in 128-255 have a 16-bit length.
+* Length: a 8-bit or 16-bit unsigned integer indicating the length of the value
+* Value: a value with semantics defined by the Type field.
 
 Defined values:
 
- | Type | Name | Value
- | 0   | Pad | Length can be 0-255. Value is filled with 0 and ignored by receiver.
- | 128 | Refresh Deadline | Length MUST be 2.  Value is a 16-bit unsigned integer number of seconds.  When this field is absent or zero, it means the current digest profile for the current manifest stream is stable.  A nonzero value means the authentication is transitioning to a new manifest stream, and the set of digest profiles SHOULD be refreshed by receivers before this much time has elapsed in order to avoid a disruption.  See {{transition}}.
+| Type | Name | Value
+| 0   | Pad | Length can be 0-255. Value is filled with 0 and ignored by receiver.
+| 128 | Refresh Deadline | Length MUST be 2.  Value is a 16-bit unsigned integer number of seconds.  When this field is absent or zero, it means the current digest profile for the current manifest stream is stable.  A nonzero value means the authentication is transitioning to a new manifest stream, and the set of digest profiles SHOULD be refreshed by receivers before this much time has elapsed in order to avoid a disruption.  See {{transition}}.
 
 1-120 and 129-248 are unassigned
 121-127 and 249-255 are reserved for experiments
@@ -485,12 +378,13 @@ Any unknown values MUST be skipped and ignored by the receiver, using the Length
 
 The total size of the manifest in octets is exactly equal to:
 
- Size of digests * packet count + 14 if T is 0
- Size of digests * packet count + 16 + TLV Length if T is 1
+Size of digests * packet count + 14 if T is 0
+or
+Size of digests * packet count + 16 + TLV Length if T is 1
 
 The total size of the TLV space is exactly equal to:
 
- (2 + Length) summed for each TLV
+(2 + Length) summed for each TLV
 
 The total size of the TLV space MUST exactly equal TLV Length.
 If the TLV space exceeds the TLV Length, the receiver MUST disconnect, and behave as if the Manifest Stream Identifier was wrong.
@@ -498,7 +392,112 @@ This state indicates a failed decoding of the TLV space.
 
 #### Packet Digests
 
-Packet digests appended one after the other, aligned to 8-bit boundaries with 0-bit padding at the end if the bit length of the digests are not multiples of 8 bits.
+Hash values calculated according to a specific digest profile. Packet digests are appended one after the other, aligned to 8-bit boundaries with 0-bit padding at the end if the bit length of the digests are not multiples of 8 bits. 
+
+## Digest Profile {#ref-profile}
+
+A packet digest is a message digest for a data packet, built according to a digest profile defined by the sender.
+
+The digest profile is defined by the sender, and specifies:
+
+  1. A cryptographically secure hash algorithm (REQUIRED)
+  2. A manifest stream identifier
+  3. Whether to hash the IP payload or the UDP payload. (see {{payload-type}})
+
+The hash algorithm is applied to a pseudoheader followed by the packet payload, as determined by the digest profile.
+The computed hash value is the packet digest.
+
+TBD: As recommended by <https://tools.ietf.org/html/rfc7696#section-2.2>, a companion document containing the mandatory-to-implement cipher suite should also be published separately and referenced by this document.
+
+### Payload Type {#payload-type}
+
+#### UDP vs. IP payload validation
+
+When the manifest definition is at the UDP layer, it applies only to packets with IP protocol of UDP (0x11) and the payload used for calculating the packet digest includes only the UDP payload with length as the number of UDP payload octets, as calculated by subtracting the size of the UDP header from the UDP payload length.
+
+When the manifest definition is at the IP layer, the payload used for calculating the packet digest includes the full IP payload of the data packets in the (S,G).
+There is no restriction on the IP protocols that can be authenticated.
+The length field in the pseudoheader is calculated by subtracting the IP Header Length from the IP length, and is equal to the number of octets in the payload for the digest calculation.
+
+#### Motivation
+
+Full IP payloads often aren't available to receivers without extra privileges on end user operating systems, so it's useful to provide a way to authenticate only the UDP payload, which is often the only portion of the packet available to many receiving applications.
+
+However, for some use cases a full IP payload is appropriate.
+For example, when retrofitting some existing protocols, some packets may be predictable or frequently repeated.
+Use of an IPSec Authentication Header {{RFC4302}} is one way to disambiguate such packets.
+Even though the shared secret means the Authentication Header can't itself be used to authenticate the packet contents, the sequence number in the Authentication Header can ensure that specific packets are not repeated at the IP layer, and so it's useful for AMBI to have the capability to authenticate such packets.
+
+Another example: some services might need to authenticate the UDP options {{I-D.ietf-tsvwg-udp-options}}.
+When using the UDP payload, the UDP options would not be part of the authenticated payload, but would be included when using the IP payload type.
+
+Lastly, since (S,G) subscription operates at the IP layer, it's possible that some non-UDP protocols will need to be authenticated, and the IP layer allows for this.
+However, most user-space transport applications are expected to use the UDP layer authentication.
+
+### Pseudoheader
+
+When calculating the hash for the packet digest, the hash algorithm is applied to a pseudoheader followed by the payload from the packet.
+The complete sequence of octets used to calculate the hash is structured as follows:
+
+~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Source Address (32 bits IPv4/128 bits IPv6)           |
+|                             ...                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Destination Address (32 bits IPv4/128 bits IPv6)        |
+|                             ...                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|     Zeroes    |   Protocol    |            Length             |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source Port          |        Destination Port       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                 Manifest Stream Identifier                    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Payload Data                           |
+|                             ...                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+#### Source Address
+
+The IPv4 or IPv6 source address of the packet.
+
+#### Destination Address
+
+The IPv4 or IPv6 destination address of the packet.
+
+#### Zeroes
+
+All bits set to 0.
+
+#### Protocol
+
+The IP Protocol field from IPv4, or the Next Header field for IPv6.
+When using UDP-layer authentication, this value is always UDP (0x11) but for IP-layer authentication it can vary per-packet.
+
+#### Length
+
+The length in octets of the Payload Data field, expressed as an unsigned 16-bit integer.
+
+#### Source Port
+
+The source port of the packet.
+Zeroes if using IP-layer authentication for a non-UDP protocol.
+
+#### Destination Port
+
+The UDP destination port of the packet.
+Zeroes if using IP-layer authentication for a non-UDP protocol.
+
+#### Manifest Stream Identifier
+
+The 32-bit identifier for the manifest stream.
+
+#### Payload Data  {#payload}
+
+The payload data includes either the IP payload or the UDP payload, as indicated by the digest profile.
 
 ## Transitioning to Other Manifest Streams {#transition}
 
@@ -640,12 +639,12 @@ TBD: follow the rest of the guidelines: https://tools.ietf.org/html/rfc3552
 
 A multicast receiver subscribes to an (S,G) and if it's a UDP application, listens on a socket with a port number for packets to arrive.
 
-UDP applications sometimes bind to an "unspecified" address ("::" or "0.0.0.0") for a particular UDP port, which will make the appliction receive and process any packet that arrives on said port.
+UDP applications sometimes bind to an "unspecified" address ("::" or "0.0.0.0") for a particular UDP port, which will make the application receive and process any packet that arrives on said port.
 
 Forwarding multicast traffic opens a new practical attack surface against receivers that have bound sockets using the "unspecified" address and were operating behind a firewall and/or NAT.
 Such applications will receive traffic from the internet only after sending an outbound packet, and usually only for return packets with the reversed source and destination port and IP addresses.
 
-Multicast subscription and routing operates at the IP layer, so when a multicst receive application subscribes to a channel, traffic with the IP addresses for that channel will start arriving.
+Multicast subscription and routing operates at the IP layer, so when a multicast receive application subscribes to a channel, traffic with the IP addresses for that channel will start arriving.
 There is no selection for the UDP port at the routing layer that prevents multicast IP traffic from arriving.
 
 When an insecure application with a vulnerability is listening to a UDP port on an unspecified address, it will receive multicast packets arriving at the device and with that destination UDP port.
