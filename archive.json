@@ -1,0 +1,424 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2025-05-11T01:37:16.854228+00:00",
+  "repo": "GrumpyOldTroll/ietf-dorms-cluster",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOEmn6ks5E47lx",
+      "title": "Ordering of sections (Digest before Manifest)",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/1",
+      "state": "CLOSED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It might be worth considering switching these sections as the digest is included inside the manifest, so explaining the larger structure first might make it easier. This can also be seen in the introduction, where a reference to 3.4 is made before a reference to 3.3 This also seems to be the convention in other RFCs. ",
+      "createdAt": "2022-03-01T20:18:04Z",
+      "updatedAt": "2025-05-06T16:19:23Z",
+      "closedAt": "2025-05-06T16:19:23Z",
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "Sure, no objection.  I guess that makes sense.",
+          "createdAt": "2022-03-16T22:01:06Z",
+          "updatedAt": "2022-03-16T22:01:06Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOEmn6ks5E49EY",
+      "title": "Using the same term \"packet digest\" for two different things",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/2",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The fact that both the digest inside the manifest and the digest that is calculated from the individual packets is called \"packet digest\" can be quite confusing, especially in this sentence:\r\n\r\n> Upon receipt of a packet digest inside a manifest conveyed in a secure channel and verification that the packet digest of a received data packet matches, the receiver has proof of the integrity of the contents of the data packet corresponding to that digest.\r\n\r\nSo it might be good to find separate terms to make the differentiation between these two easier.",
+      "createdAt": "2022-03-01T20:24:29Z",
+      "updatedAt": "2022-03-16T21:56:04Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "Maybe.  Any specific suggestions?  Maybe something like \"receiver-computed packet digest of the received data packet\"?\r\n\r\nI was thinking it made sense to use the same term because they're tightly coupled, since they're the same value if the transport was not corrupted.  I think different terms would be fine as long as their relatedness is still very clear.",
+          "createdAt": "2022-03-16T21:56:04Z",
+          "updatedAt": "2022-03-16T21:56:04Z"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOEmn6ks5E4_Nm",
+      "title": "Multicast-style efficiencies ",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/3",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Section 2.1:\r\n\r\n> Note that a manifest contains potentially many packet digests, and its size can be tuned to fit within a convenient PDU (Protocol Data Unit) of the manifest transport stream.\r\nBy doing so, many packet digests for the multicast data stream can be delivered per packet of the manifest transport.\r\nThe intent is that even with unicast-based manifest transport, multicast-style efficiencies of scale can still be realized with only a relatively small unicast overhead, when manifests use a unicast transport.\r\n\r\nIs this referring to the overall transport of the content/data? It somewhat sounds like its referring to the manifest stream and it reaching multicast-style efficiencies, which I guess is not really the intended meaning. ",
+      "createdAt": "2022-03-01T20:34:31Z",
+      "updatedAt": "2022-03-16T21:36:54Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "I think this text is left over from when we were trying to combine this with ALTA, to put the manifests in an authenticated multicast stream.\r\n\r\nProbably this text is just unnecessary, or can be raised in a context like ALTA (when and if we get to it) where the size of a PDU of the manifest stream is a relevant concept.",
+          "createdAt": "2022-03-16T21:36:54Z",
+          "updatedAt": "2022-03-16T21:36:54Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOEmn6ks5E5CWP",
+      "title": "Hold down times/out of order packets",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/4",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Assume that a manifest gets significantly delayed  so the data packets sit and wait for their 2 second hold out. In the mean time, a manifest arrives that verifies newer packets. Shortly before the hold down time of the old packets runs out, the manifest arrives, verifying all packets that were waiting at once. This would lead to a burst of out-of order packets arriving at the application. To me that sounds like it could potentially cause trouble, as applications would need to take special precautions to deal with such bursts. \r\n\r\nConsidering there is focus on making sure manifests arrive before data packets, is there really any point in keeping data packets without a corresponding manifest around at all? Won't such packets be irrelevant for most multicast applications anyway if they only get verified 2 seconds after they arrive? ",
+      "createdAt": "2022-03-01T20:50:53Z",
+      "updatedAt": "2022-03-16T21:33:02Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "Yes, good point.  I think this is not a sustainable requirement and we should remove it, as with the closely related #6.",
+          "createdAt": "2022-03-16T21:33:02Z",
+          "updatedAt": "2022-03-16T21:33:02Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOEmn6ks5E5C_R",
+      "title": "Duplicate section",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/5",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In 3.2.1:\r\n\r\n> Receivers MAY deviate from the values recommended by the sender for a variety of reasons, including their own memory constraints or local administrative configuration (for example, it might improve user experience in some situations to hold packets longer than the server recommended when there are receiver-specific delays in the manifest stream that exceed the server's expectations).\r\nDecreasing the buffering durations recommended by the server increases the risk of losing packets, but can be an appropriate tradeoff for specific network conditions and hardware or memory constraints on some devices.\r\n\r\nthen immediately following that:\r\n\r\n> Receivers SHOULD follow the recommendations for hold times provided by the sender (including the default values from the YANG model when unspecified), subject to their capabilities and any administratively configured overrides at the receiver.\r\n\r\nThis to me sounds like its saying the same thing (with the first one just being more specific), is there any need to keep both around?",
+      "createdAt": "2022-03-01T20:54:24Z",
+      "updatedAt": "2022-03-16T21:31:37Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "I think these are slightly different because the normative meaning of SHOULD imposes a soft requirement on receivers, whereas the normative meaning of MAY simply permits receiver behavior without implying any duty to do something different if possible.  So if we keep only one, we'd have to keep the second one, with the SHOULD, even though listing some example good reasons for a receiver to violate the SHOULD seems like worthwhile text to me.\r\n\r\nThat said, it's a fair point it seems pretty redundant, so maybe there's a cleaner way to phrase this that retains the SHOULD and the examples without sounding like it's repeating itself.",
+          "createdAt": "2022-03-16T21:31:37Z",
+          "updatedAt": "2022-03-16T21:31:37Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOEmn6ks5E5FIZ",
+      "title": "Inter-packet gap and delayed packets",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/6",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I am not sure how the interaction between delayed packets and keeping the inter packet gap works. Say a manifest gets delayed and some packets are buffered, when the manifest arrives does that mean that the gap is still kept? Wouldn't this in turn mean that any newly arriving packets are now delayed by the time the manifest was delayed as they also keep the inter-packet gap to the delayed packets? Wouldn't this delay also continuously increase with every delayed manifest? \r\n",
+      "createdAt": "2022-03-01T21:04:13Z",
+      "updatedAt": "2022-03-16T21:26:36Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "You are correct, this text should just be removed.  Good point.\r\n\r\n*Maybe* it's worth adding something to recommend that applications that depend on timing from on-path authenticators should do server-side buffering of the data packets to ensure the hashes will always arrive before the data, and that on-path authenticators should forward packets immediately upon authentication, but I'd expect anything performant enough to do that anyway, so maybe it doesn't need spelling out?\r\n\r\nBut yes, we should get rid of this part, thanks.",
+          "createdAt": "2022-03-16T21:26:35Z",
+          "updatedAt": "2022-03-16T21:26:35Z"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOEmn6ks5E5G9c",
+      "title": "UDP payload length",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/7",
+      "state": "CLOSED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In section 3.3.1.1.1:\r\n\r\n> When the manifest definition is at the UDP layer, it applies only to packets with IP protocol of UDP (0x11) and the payload used for calculating the packet digest includes only the UDP payload with length as the number of UDP payload octets, as calculated by subtracting the size of the UDP header from the UDP payload length.\r\n\r\nShouldn't this say \r\n\r\n> [..] as calculated by subtracting the size of the UDP header from the _IP_ payload length.\r\n\r\nas the UDP payload length is inside the UDP header and already the desired number of UDP payload octets? ",
+      "createdAt": "2022-03-01T21:11:14Z",
+      "updatedAt": "2022-03-20T13:53:57Z",
+      "closedAt": "2022-03-20T13:53:57Z",
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "UDP's length value is the UDP header plus payload (https://datatracker.ietf.org/doc/html/rfc768):\r\n\r\n~~~\r\nLength  is the length  in octets  of this user datagram  including  this\r\nheader  and the data.   (This  means  the minimum value of the length is\r\neight.)\r\n~~~\r\n\r\nThe IP length value is the IP header plus IP payload, which can be larger than the UDP contents (this is the mechanism they're using for defining UDP options in the trailer space that's thus permitted to exist: https://datatracker.ietf.org/doc/html/draft-ietf-tsvwg-udp-options-15#section-3).\r\n\r\nIt's perhaps a good idea to consider more carefully whether this is the right set of data to authenticate, or whether other choices are needed.  Should there be an option to include the whole IP packet, particularly including IP options?  It's possible for an application to examine these, after all, so maybe wise to authenticate them?  But I wanted to allow for uses like mnat, which might actually discard these during an address translation step.  (It might even be possible for middle boxes to insert options, in general?)\r\n\r\nMy intent here was to allow for just authenticating the application layer data, which I think of as just the UDP payload.",
+          "createdAt": "2022-03-16T21:22:10Z",
+          "updatedAt": "2022-03-16T21:22:10Z"
+        },
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, of course sorry about that! Closing this for now, can open again for your comment about scope.",
+          "createdAt": "2022-03-20T13:53:57Z",
+          "updatedAt": "2022-03-20T13:53:57Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOEmn6ks5E5Icx",
+      "title": "Manifest identifier vs. manifest stream identifier",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/8",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Is there a difference between these two? If so, I dint think its made very clear what it is so far. ",
+      "createdAt": "2022-03-01T21:18:22Z",
+      "updatedAt": "2022-03-16T21:02:25Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "Fair point, probably they should both be named manifest stream identifier.\r\n\r\nAs written, they're the same value in 2 different places (data packet pseudoheader vs. the manifest header).  There's a difference, but they both have the same value as an id in a manifest-stream-definition yang data object.",
+          "createdAt": "2022-03-16T21:02:25Z",
+          "updatedAt": "2022-03-16T21:02:25Z"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOEmn6ks5E5Jmh",
+      "title": "Explain handshake/parameters in text",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/9",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "While they are included in the YANG model, I think it would be a good idea to also explain the handshake and relevant parameters (hash-algorthim, hold times etc.) in the text itself. I think it just makes the documents more readable/ allows it even to be understood by people who aren't that versed with YANG. ",
+      "createdAt": "2022-03-01T21:23:33Z",
+      "updatedAt": "2022-03-16T22:02:18Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "Yes, this is badly needed.  Good point, thanks for raising it.",
+          "createdAt": "2022-03-16T22:02:18Z",
+          "updatedAt": "2022-03-16T22:02:18Z"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOEmn6ks5GDQSk",
+      "title": "Collision attacks",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/11",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In section 8.1 it say\r\n\r\n> Protocols that have predictable packets run the risk of offline attacks for hash collisions against those packets. When authenticating a protocol that might have predictable packets, it's RECOMMENDED to use a hash function secure against such attacks\r\n\r\nI think this should be a requirement (not a recommendation) regardless of wether or not there are predictable packets. \r\n\r\nCan't any bad actor get access to the manifest stream? If so, they know the hash values that will be expected by the receivers. Given that manifests are supposed to be sent before the data packets, this might give them enough time to create packets that collide with the checksum, if a weak algorithm like MD5 is used, and send them. This means that the receivers could get inserted packets with matching checksums and authenticate them. Is there another mechanic I am missing that would prevent this? ",
+      "createdAt": "2022-03-21T11:38:04Z",
+      "updatedAt": "2022-03-21T11:38:36Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 10,
+      "id": "PR_kwDOEmn6ks40s3z_",
+      "title": "Editorial changes",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/10",
+      "state": "MERGED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Some typos, reordering and of digest and manifest, renaming of manifest identifier to manifest stream identifier. \r\n\r\nCloses #1 and #8 ",
+      "createdAt": "2022-03-20T13:56:36Z",
+      "updatedAt": "2025-05-06T16:19:22Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "0ab9eb3b86da97ca159cd1ffed2a4dd6be3145c4",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "master",
+      "headRefOid": "ad584407a48ba70b5851d68628eb22251befab29",
+      "closedAt": "2025-05-06T16:19:22Z",
+      "mergedAt": "2025-05-06T16:19:22Z",
+      "mergedBy": "GrumpyOldTroll",
+      "mergeCommit": {
+        "oid": "4b201c4c3f53783a97aa888dfc52330817b96273"
+      },
+      "comments": [
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Now also trying to address the digest ambiguity.",
+          "createdAt": "2022-03-20T14:51:15Z",
+          "updatedAt": "2022-03-20T14:51:15Z"
+        },
+        {
+          "author": "squarooticus",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think it's been long enough that we should just merge this and maybe the other PRs, and then just start editing from that point.",
+          "createdAt": "2025-05-06T16:13:27Z",
+          "updatedAt": "2025-05-06T16:13:27Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOEmn6ks402Jph",
+      "title": "Refactor validation windows",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/12",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #4, #5 and #6 ",
+      "createdAt": "2022-03-22T23:42:38Z",
+      "updatedAt": "2025-05-06T16:15:30Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "0ab9eb3b86da97ca159cd1ffed2a4dd6be3145c4",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "issue4and6",
+      "headRefOid": "2a8df95ee09ec04d67a3a028292daa74f3afbbe7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "squarooticus",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If the consensus from #4 #5 and #6 was to remove the packet pacing preservation section, then this should be merged.",
+          "createdAt": "2025-05-06T16:15:29Z",
+          "updatedAt": "2025-05-06T16:15:29Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOEmn6ks405d6s",
+      "title": "First attempt at specifying the joining of a manifest stream",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/13",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #9. I promise this is the last PR for now. Also please squash my commits, apparently I only realize how bad my text is when I see the diff on GitHub...\r\n\r\nAlso might need to change where the default times get mentioned, but I didn't want to crossover with #12 ",
+      "createdAt": "2022-03-23T17:18:46Z",
+      "updatedAt": "2022-03-23T17:20:01Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "0ab9eb3b86da97ca159cd1ffed2a4dd6be3145c4",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "issue9",
+      "headRefOid": "7cec54387500ece6147b12cf67352f5b52eb8b5d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOEmn6ks43Mywd",
+      "title": "Refactor collision attacks",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/14",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "closes #11 ",
+      "createdAt": "2022-05-03T00:29:02Z",
+      "updatedAt": "2022-05-03T00:29:02Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "0ab9eb3b86da97ca159cd1ffed2a4dd6be3145c4",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "iss11",
+      "headRefOid": "f75cd40a75dba1261c0d0bd269599f6f356c67ac",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
