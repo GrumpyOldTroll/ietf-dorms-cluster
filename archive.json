@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-18T01:38:35.480373+00:00",
+  "timestamp": "2025-05-22T01:25:22.726686+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -478,6 +478,38 @@
       "body": "It seems to me that this is an implementation detail and doesn't need specification. ",
       "createdAt": "2025-05-16T13:45:18Z",
       "updatedAt": "2025-05-16T13:45:18Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 27,
+      "id": "I_kwDOEmn6ks63bz-3",
+      "title": "DORMS: Privacy considerations",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/27",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I think 5.2 is missing a case, where an on path observer can learn about the subscription of a client by seeing a packet to a known DORMS server, i.e. Source IP x sends packet to DORMS server y, so x is probably joined/wants to join one of the multicast streams y provides metadata for. This is probably minor. \n\nI also wonder if there is the possibility of a different mechanism that would preserve privacy better, e.g. instead of querying a server over unicast, instead we point to a separate (S,G) that just periodically broadcasts the relevant metadata. That would probably also help with scaling. This is of course only for the cases where the metadata is not required to be delivered over a secure channel, e.g. AMBI hashes.",
+      "createdAt": "2025-05-20T15:57:31Z",
+      "updatedAt": "2025-05-20T16:02:33Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 28,
+      "id": "I_kwDOEmn6ks63b43K",
+      "title": "DORMS: Editorial Nits",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/28",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Some slightly confusing sentences:\n- \"This supplemental information is sometimes needed by entities engaged in delivery or processing of the traffic to handle the traffic according to their requirements.\" \n- \"However, clients with out of band knowledge about the scope of the expected contents MAY issue requests for (S,G) metadata narrowed only by the source-address, or not narrowed at all.\"\n",
+      "createdAt": "2025-05-20T16:04:28Z",
+      "updatedAt": "2025-05-20T16:04:28Z",
       "closedAt": null,
       "comments": []
     }
