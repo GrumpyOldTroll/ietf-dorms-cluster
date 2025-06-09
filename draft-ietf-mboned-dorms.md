@@ -126,37 +126,25 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 ## Motivation and Use Cases {#motivation}
 
 DORMS provides a framework that can be extended to publish supplemental information about multicast traffic in a globally discoverable manner.
-This supplemental information is sometimes needed by entities engaged in delivery or processing of the traffic to handle the traffic according to their requirements.
+This supplemental information may be needed by entities involved in the delivery or processing of the traffic to ensure it is handled in accordance with their operational or policy requirements.
 
 Detailing the specifics of all known possible extensions is out of scope for this document except to note that a range of possible use cases are expected and they may be supported by a variety of different future extensions.
 But a few example use cases are provided below for illustration.
 
 ### Provisioning and Oversubscription Protection
 
-One use case for DORMS is when a network that is capable of forwarding multicast traffic may need to take provisioning actions or make admission control decisions based on the expected bitrate of the traffic in order to prevent oversubscription of constrained devices in the network.
+One use case for DORMS is when a network that is capable of forwarding multicast traffic may need to take provisioning actions or make admission control decisions based on the expected bitrate of the traffic in order to prevent oversubscription of constrained devices in the network. In such a case, the network in question could learn these bitrates from the metadata provided by DORMS.
 {{I-D.draft-ietf-mboned-cbacc}} defines some DORMS extensions to support this use case.
 
 ### Authentication
 
 Another use case for DORMS is providing information for use in authenticating the multicast traffic before accepting it for forwarding by a network device, or for processing by a receiving application.
-{{I-D.draft-ietf-mboned-ambi}} defines some DORMS extensions to support this use case.
+As DORMS metadata is transmitted over a secure and authenticated connection, it can act as a security anchor for data required to verify the authenticity of multicast packets. {{I-D.draft-ietf-mboned-ambi}} defines some DORMS extensions to support this use case.
 
 ### Content Description
 
 Another use case for DORMS is describing the contents carried by a multicast traffic channel.
 The content description could include information about the protocols or applications that can be used to consume the traffic, or information about the media carried (e.g. information based on the Dublin Core Metadata Element Set {{RFC5013}}), or could make assertions about the legal status of the traffic within specific contexts.
-
-## Channel Discovery
-
-DORMS provides a method for clients to fetch metadata about (S,G)s that are already known to the clients.
-In general, a DORMS client might learn of an (S,G) by any means, so describing all possible methods a DORMS client might use to discover a set of (S,G)s for which it wants metadata is out of scope for this document.
-
-But for example, a multicast receiver application that is a DORMS client might learn about an (S,G) by getting signals from inside the application logic, such as a selection made by a user, or a scheduled API call that reacts to updates in a library provided by a service operator.
-
-As another example, an on-path router that’s a DORMS client might instead learn about an (S,G) by receiving a PIM message or an IGMP or MLD membership report indicating a downstream client has tried to subscribe to an (S,G).
-Such a router might use information learned from the DORMS metadata to make an access control decision about whether to propagate the join futher upstream in the network.
-
-Other approaches for learning relevant (S,G)s could be driven by monitoring a route reflector to discover channels that are being actively forwarded, for a purpose such as monitoring network health.
 
 ## Notes for Contributors and Reviewers
 
@@ -194,6 +182,18 @@ Log of odd things that need to be the way they are because of some reason that t
 # Discovery and Metdata Retrieval {#disco}
 
 A client that needs metadata about an (S,G) MAY attempt to discover metadata for the (S,G) using the mechanisms defined here, and MAY use the metadata received to manage the forwarding or processing of the packets in the channel.
+
+## Channel Discovery
+
+DORMS provides a method for clients to fetch metadata about (S,G)s that are already known to the clients.
+In general, a DORMS client might learn of an (S,G) by any means, so describing all possible methods a DORMS client might use to discover a set of (S,G)s for which it wants metadata is out of scope for this document.
+
+But for example, a multicast receiver application that is a DORMS client might learn about an (S,G) by getting signals from inside the application logic, such as a selection made by a user, or a scheduled API call that reacts to updates in a library provided by a service operator.
+
+As another example, an on-path router that’s a DORMS client might instead learn about an (S,G) by receiving a PIM message or an IGMP or MLD membership report indicating a downstream client has tried to subscribe to an (S,G).
+Such a router might use information learned from the DORMS metadata to make an access control decision about whether to propagate the join futher upstream in the network.
+
+Other approaches for learning relevant (S,G)s could be driven by monitoring a route reflector to discover channels that are being actively forwarded, for a purpose such as monitoring network health.
 
 ## DNS Bootstrap {#dns-boot}
 
@@ -234,14 +234,6 @@ When performing the SRV lookup, any CNAMEs or DNAMEs found MUST be followed.
 This is necessary to support zone delegation.
 Some examples outlining this need are described in {{RFC2317}}.
 
-## Ignore List {#ignore}
-
-If a DORMS client reaches a DORMS server but determines through examination of responses from that DORMS server that it may not understand or be able to use the responses of the server (for example due to an issue like a version mismatch or modules that are missing but are required for the DORMS client's purposes), the client MAY add this server to an ignore list and reject servers in its ignore list during future discovery attempts.
-
-A client using the DNS Bootstrap discovery method in {{dns-boot}} would treat servers in its ignore list as unreachable for the purposes of processing the SRV RR as described in {{RFC2782}}.
-(For example, a client might end up selecting a server with a less-preferred priority than servers in its ignore list, even if an HTTPS connection could have been formed successfully with some of those servers.)
-
-If an ignore list is maintained, entries SHOULD time out and allow for re-checking after either the cache expiration time from the DNS response that caused the server to be added to the ignore list, or for a configurable hold-down time that has a default value no shorter than 1 hour and no longer than 24 hours.
 
 ## RESTCONF Bootstrap
 
@@ -402,28 +394,6 @@ It is RECOMMENDED that DORMS servers use the Access-Control-Allow-Origin header 
 The use of '\*' for allowed origins is NOT RECOMMENDED for publicly reachable DORMS servers.
 A review of some of the potential consequences of unrestricted CORS access is given in {{security-cors}}.
 
-# Scalability Considerations
-
-## Provisioning {#provisioning}
-
-In contrast to many common RESTCONF deployments that are intended to provide configuration management for a service to a narrow set of authenticated administrators, DORMS servers often provide read-only metadata for public access or for a very large set of end receivers, since it provides metadata in support of multicast data streams and multicast can scale to very large audiences.
-
-Operators are advised to provision the DORMS service in a way that will scale appropriately to the size of the expected audience.
-Specific advice on such scaling is out of scope for this document, but some of the mechanisms outlined in {{RFC3040}} or other online resources might be useful, depending on the expected number of receivers.
-
-## Data Scoping  {#scoping}
-
-Except as outlined below, clients SHOULD issue narrowed requests for DORMS resources by following the format from Section 3.5.3 of {{RFC8040}} to encode data resource identifiers in the request URI.
-This avoids downloading excessive data, since the DORMS server may provide metadata for many (S,G)s, possibly from many different senders.
-
-However, clients with out of band knowledge about the scope of the expected contents MAY issue requests for (S,G) metadata narrowed only by the source-address, or not narrowed at all.
-Depending on the request patterns and the contents of the data store, this may result in fewer round trips or less overhead, and can therefore be helpful behavior for scaling purposes in some scenarios.
-In general, engaging in this behavior requires some administrative configuration or some optimization heuristics that can recover from unexpected results.
-
-Servers MAY restrict or throttle client access based on the client certificate presented (if any), or based on heuristics that take note of client request patterns.
-
-A complete description of the heuristics for clients and servers to meet their scalability goals is out of scope for this document.
-
 # YANG Model {#model}
 
 The primary purpose of the YANG model defined here is to serve as a scaffold for the more useful metadata that will extend it.
@@ -443,68 +413,6 @@ YANG-TREE ietf-dorms.yang
 ~~~~~~~~~
 YANG-MODULE ietf-dorms.yang
 ~~~~~~~~~
-
-# Privacy Considerations
-
-## Linking Content to Traffic Streams
-
-In the typical case, the mechanisms defined in this document provide a standardized way to discover information that is already available in other ways.
-
-However, depending on the metadata provided by the server, observers may be able to more easily associate traffic from an (S,G) with the content contained within the (S,G).
-At the subscriber edge of a multicast-capable network, where the network operator has the capability to localize an IGMP {{RFC3376}} or MLD {{RFC3810}} channel subscription to a specific user or location, for example by MAC address or source IP address, the structured publishing of metadata may make it easier to automate collection of data about the content a receiver is consuming.
-
-## Linking Multicast Subscribers to Unicast Connections
-
-Subscription to a multicast channel generally only exposes the IGMP or MLD membership report to others on the same LAN, and as the membership propagates through a multicast-capable network, it ordinarily gets aggregated with other end users.
-
-However, a RESTCONF connection is a unicast connection, and exposes a different set of information to the operator of the RESTCONF server, including IP address and timing about the requests made.
-Where DORMS access becomes required to succeed a multicast join (for example, as expected in a browser deployment), this can expose new information about end users relative to services based solely on multicast streams.
-The information disclosure occurs by giving the DORMS service operator information about the client's IP and the channels the client queried.
-
-In some deployments it may be possible to use a proxy that aggregates many end users when the aggregate privacy characteristics are needed by end users.
-
-# IANA Considerations
-
-## The YANG Module Names Registry
-
-This document adds one YANG module to the "YANG Module Names" registry maintained at \<https://www.iana.org/assignments/yang-parameters\>.
-The following registrations are made, per the format in Section 14 of {{RFC6020}}:
-
-~~~
-      name:      ietf-dorms
-      namespace: urn:ietf:params:xml:ns:yang:ietf-dorms
-      prefix:    dorms
-      reference: I-D.draft-ietf-mboned-dorms
-~~~
-
-## The XML Registry
-
-This document adds the following registration to the "ns" subregistry of the "IETF XML Registry" defined in {{RFC3688}}, referencing this document.
-
-~~~
-       URI: urn:ietf:params:xml:ns:yang:ietf-dorms
-       Registrant Contact: The IESG.
-       XML: N/A, the requested URI is an XML namespace.
-~~~
-
-## The Service Name and Transport Protocol Port Number Registry
-
-This document adds one service name to the "Service Name and Transport Protocol Port Number Registry" maintained at \<https://www.iana.org/assignments/service-names-port-numbers\>.
-The following registrations are made, per the format in Section 8.1.1 of {{RFC6335}}:
-
-~~~
-     Service Name:            dorms
-     Transport Protocol(s):   TCP, UDP
-     Assignee:                IESG <iesg@ietf.org>
-     Contact:                 IETF Chair <chair@ietf.org>
-     Description:             The DORMS service (RESTCONF that
-                              includes ietf-dorms YANG model)
-     Reference:               I-D.draft-ietf-mboned-dorms
-     Port Number:             N/A
-     Service Code:            N/A
-     Known Unauthorized Uses: N/A
-     Assignment Notes:        N/A
-~~~
 
 # Security Considerations {#security}
 
@@ -592,7 +500,99 @@ For a legitimately popular event, this could cause a widespread disruption to th
 
 A denial of service attack of this sort would be thwarted by restricting the access to (S,G)s to authorized websites through the use of properly restricted CORS headers.
 
+# Privacy Considerations
+
+## Linking Content to Traffic Streams
+
+In the typical case, the mechanisms defined in this document provide a standardized way to discover information that is already available in other ways.
+
+However, depending on the metadata provided by the server, observers may be able to more easily associate traffic from an (S,G) with the content contained within the (S,G).
+At the subscriber edge of a multicast-capable network, where the network operator has the capability to localize an IGMP {{RFC3376}} or MLD {{RFC3810}} channel subscription to a specific user or location, for example by MAC address or source IP address, the structured publishing of metadata may make it easier to automate collection of data about the content a receiver is consuming.
+
+## Linking Multicast Subscribers to Unicast Connections
+
+Subscription to a multicast channel generally only exposes the IGMP or MLD membership report to others on the same LAN, and as the membership propagates through a multicast-capable network, it ordinarily gets aggregated with other end users.
+
+However, a RESTCONF connection is a unicast connection, and exposes a different set of information to the operator of the RESTCONF server, including IP address and timing about the requests made.
+Where DORMS access becomes required to succeed a multicast join (for example, as expected in a browser deployment), this can expose new information about end users relative to services based solely on multicast streams.
+The information disclosure occurs by giving the DORMS service operator information about the client's IP and the channels the client queried.
+
+In some deployments it may be possible to use a proxy that aggregates many end users when the aggregate privacy characteristics are needed by end users.
+
+# Operational Considerations
+
+## Provisioning {#provisioning}
+
+In contrast to many common RESTCONF deployments that are intended to provide configuration management for a service to a narrow set of authenticated administrators, DORMS servers often provide read-only metadata for public access or for a very large set of end receivers, since it provides metadata in support of multicast data streams and multicast can scale to very large audiences.
+
+Operators are advised to provision the DORMS service in a way that will scale appropriately to the size of the expected audience.
+Specific advice on such scaling is out of scope for this document, but some of the mechanisms outlined in {{RFC3040}} or other online resources might be useful, depending on the expected number of receivers.
+
+## Data Scoping  {#scoping}
+
+Except as outlined below, clients SHOULD issue narrowed requests for DORMS resources by following the format from Section 3.5.3 of {{RFC8040}} to encode data resource identifiers in the request URI.
+This avoids downloading excessive data, since the DORMS server may provide metadata for many (S,G)s, possibly from many different senders.
+
+However, clients that possess out-of-band knowledge about the expected content scope MAY issue (S,G) metadata requests that are filtered only by the source address, or that are unfiltered altogether.
+Depending on the request patterns and the contents of the data store, this may result in fewer round trips or less overhead, and can therefore be helpful behavior for scaling purposes in some scenarios.
+In general, engaging in this behavior requires some administrative configuration or some optimization heuristics that can recover from unexpected results.
+
+Servers MAY restrict or throttle client access based on the client certificate presented (if any), or based on heuristics that take note of client request patterns.
+
+A complete description of the heuristics for clients and servers to meet their scalability goals is out of scope for this document.
+
+## Ignore List {#ignore}
+
+If a DORMS client reaches a DORMS server but determines through examination of responses from that DORMS server that it may not understand or be able to use the responses of the server (for example due to an issue like a version mismatch or modules that are missing but are required for the DORMS client's purposes), the client MAY add this server to an ignore list and reject servers in its ignore list during future discovery attempts.
+
+A client using the DNS Bootstrap discovery method in {{dns-boot}} would treat servers in its ignore list as unreachable for the purposes of processing the SRV RR as described in {{RFC2782}}.
+(For example, a client might end up selecting a server with a less-preferred priority than servers in its ignore list, even if an HTTPS connection could have been formed successfully with some of those servers.)
+
+If an ignore list is maintained, entries SHOULD time out and allow for re-checking after either the cache expiration time from the DNS response that caused the server to be added to the ignore list, or for a configurable hold-down time that has a default value no shorter than 1 hour and no longer than 24 hours.
+
+# IANA Considerations
+
+## The YANG Module Names Registry
+
+This document adds one YANG module to the "YANG Module Names" registry maintained at \<https://www.iana.org/assignments/yang-parameters\>.
+The following registrations are made, per the format in Section 14 of {{RFC6020}}:
+
+~~~
+      name:      ietf-dorms
+      namespace: urn:ietf:params:xml:ns:yang:ietf-dorms
+      prefix:    dorms
+      reference: I-D.draft-ietf-mboned-dorms
+~~~
+
+## The XML Registry
+
+This document adds the following registration to the "ns" subregistry of the "IETF XML Registry" defined in {{RFC3688}}, referencing this document.
+
+~~~
+       URI: urn:ietf:params:xml:ns:yang:ietf-dorms
+       Registrant Contact: The IESG.
+       XML: N/A, the requested URI is an XML namespace.
+~~~
+
+## The Service Name and Transport Protocol Port Number Registry
+
+This document adds one service name to the "Service Name and Transport Protocol Port Number Registry" maintained at \<https://www.iana.org/assignments/service-names-port-numbers\>.
+The following registrations are made, per the format in Section 8.1.1 of {{RFC6335}}:
+
+~~~
+     Service Name:            dorms
+     Transport Protocol(s):   TCP, UDP
+     Assignee:                IESG <iesg@ietf.org>
+     Contact:                 IETF Chair <chair@ietf.org>
+     Description:             The DORMS service (RESTCONF that
+                              includes ietf-dorms YANG model)
+     Reference:               I-D.draft-ietf-mboned-dorms
+     Port Number:             N/A
+     Service Code:            N/A
+     Known Unauthorized Uses: N/A
+     Assignment Notes:        N/A
+~~~
+
 # Acknowledgements
 
 Thanks to Christian Worm Mortensen, Dino Farinacci, Lenny Guiliano, and Reshad Rahman for their very helpful comments and reviews.
-
