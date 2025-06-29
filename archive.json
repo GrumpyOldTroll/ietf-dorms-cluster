@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-26T01:27:50.382013+00:00",
+  "timestamp": "2025-06-29T01:45:55.249258+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -374,15 +374,15 @@
       "id": "I_kwDOEmn6ks627XzK",
       "title": "DORMS: Make example use cases more explicit",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Currently the example use cases are a bit ambiguous/ it's not immediately clear why/how DORMS can solve them. Make it more explicit, e.g. state that information about expected bit rates could be provided by DORMS which in turn could be used for decision making. etc. ",
       "createdAt": "2025-05-16T13:28:05Z",
-      "updatedAt": "2025-05-16T13:28:05Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-26T13:59:49Z",
+      "closedAt": "2025-06-26T13:59:49Z",
       "comments": []
     },
     {
@@ -390,15 +390,15 @@
       "id": "I_kwDOEmn6ks627aYJ",
       "title": "DORMS: Channel discovery section",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/21",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "To me, the channel discovery section seems out of scope. Discovering SSM channels is not part of DORMS, so it might be better if we remove that section and simply state something akin to \"DORMS can in principal be used for any (S,G)\", which is largely already covered by Section 2.",
       "createdAt": "2025-05-16T13:32:16Z",
-      "updatedAt": "2025-05-16T13:32:56Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-26T14:00:19Z",
+      "closedAt": "2025-06-26T14:00:19Z",
       "comments": []
     },
     {
@@ -413,25 +413,41 @@
       "labels": [],
       "body": "Also moving Jakes comments for Dorms from the DOC:\n\nJake:  building the draft without this line produces a warning about no reference to [[RFC6991](https://maxf12.github.io/ietf-dorms-cluster/draft-ietf-mboned-dorms.html#RFC6991)] or [[RFC8294](https://maxf12.github.io/ietf-dorms-cluster/draft-ietf-mboned-dorms.html#RFC8294)], but these are imported in the yang model. RFC 8407 requires the normative reference to 8294 (there's an exception for 6991 but I'm not sure why and it doesn't seem forbidden).",
       "createdAt": "2025-05-16T13:37:20Z",
-      "updatedAt": "2025-05-16T13:46:22Z",
+      "updatedAt": "2025-06-26T14:53:19Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Seems to now build fine without this line ",
+          "createdAt": "2025-06-26T14:53:19Z",
+          "updatedAt": "2025-06-26T14:53:19Z"
+        }
+      ]
     },
     {
       "number": 23,
       "id": "I_kwDOEmn6ks627dtg",
       "title": "DORMS: Non normative DNS expiry time",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Jake:  Although it's non-normative, I chose the boundaries in the recommendation for default setting of DNS expiry time in [Section 2.2]based on the best practices advice at https://www.varonis.com/blog/dns-ttl/ for \"Short\" and \"Long\" times.",
       "createdAt": "2025-05-16T13:37:55Z",
-      "updatedAt": "2025-05-16T13:46:10Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-06-27T17:30:48Z",
+      "closedAt": "2025-06-27T17:30:48Z",
+      "comments": [
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think now that its in the ops considerations section its fine as is",
+          "createdAt": "2025-06-26T14:54:23Z",
+          "updatedAt": "2025-06-26T14:54:23Z"
+        }
+      ]
     },
     {
       "number": 24,
@@ -445,9 +461,17 @@
       "labels": [],
       "body": "Jake: [Section 7.1] is intended to be the template from https://trac.ietf.org/trac/ops/wiki/yang-security-guidelines, as required by https://datatracker.ietf.org/doc/html/rfc8407#section-3.7. Individual nodes are not listed because blanket statements in that section covere them.",
       "createdAt": "2025-05-16T13:38:27Z",
-      "updatedAt": "2025-05-16T13:46:02Z",
+      "updatedAt": "2025-06-26T14:54:38Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Seems fine as is",
+          "createdAt": "2025-06-26T14:54:38Z",
+          "updatedAt": "2025-06-26T14:54:38Z"
+        }
+      ]
     },
     {
       "number": 25,
@@ -461,24 +485,46 @@
       "labels": [],
       "body": "Jake: The 'must' constraint in the group list seems awkward, but seems to work. Its intent is to require source & group to be either both IPv4 or both IPv6, without mixing & matching. It requires that either both the group address and its source parent's address must contain a colon or both must NOT contain a colon, where presence of a colon is used to distinguish IPv4 from IPv6. Maybe there's a better way?",
       "createdAt": "2025-05-16T13:38:46Z",
-      "updatedAt": "2025-05-16T13:45:49Z",
+      "updatedAt": "2025-06-27T15:42:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "MaxF12",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am not entirely sure what this is referring to?",
+          "createdAt": "2025-06-26T14:53:59Z",
+          "updatedAt": "2025-06-26T14:53:59Z"
+        },
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "I think it was this:\nhttps://github.com/GrumpyOldTroll/ietf-dorms-cluster/blob/master/ietf-dorms.yang#L80",
+          "createdAt": "2025-06-27T15:31:40Z",
+          "updatedAt": "2025-06-27T15:31:40Z"
+        },
+        {
+          "author": "GrumpyOldTroll",
+          "authorAssociation": "OWNER",
+          "body": "IIRC there was a promising idea to somehow use the ipv4-address and ipv6-address typedefs from https://datatracker.ietf.org/doc/html/rfc6991, but I don't think I ever figured out the syntax (nor of course checked that it implements the intended requirement correctly).",
+          "createdAt": "2025-06-27T15:42:32Z",
+          "updatedAt": "2025-06-27T15:42:32Z"
+        }
+      ]
     },
     {
       "number": 26,
       "id": "I_kwDOEmn6ks627iGl",
       "title": "DORMS: 2.2 Ignore List",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/26",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "It seems to me that this is an implementation detail and doesn't need specification. ",
       "createdAt": "2025-05-16T13:45:18Z",
-      "updatedAt": "2025-05-16T13:45:18Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-26T14:00:19Z",
+      "closedAt": "2025-06-26T14:00:19Z",
       "comments": []
     },
     {
@@ -486,31 +532,39 @@
       "id": "I_kwDOEmn6ks63bz-3",
       "title": "DORMS: Privacy considerations",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/27",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I think 5.2 is missing a case, where an on path observer can learn about the subscription of a client by seeing a packet to a known DORMS server, i.e. Source IP x sends packet to DORMS server y, so x is probably joined/wants to join one of the multicast streams y provides metadata for. This is probably minor. \n\nI also wonder if there is the possibility of a different mechanism that would preserve privacy better, e.g. instead of querying a server over unicast, instead we point to a separate (S,G) that just periodically broadcasts the relevant metadata. That would probably also help with scaling. This is of course only for the cases where the metadata is not required to be delivered over a secure channel, e.g. AMBI hashes.",
       "createdAt": "2025-05-20T15:57:31Z",
-      "updatedAt": "2025-05-20T16:02:33Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-06-27T17:28:54Z",
+      "closedAt": "2025-06-27T17:28:54Z",
+      "comments": [
+        {
+          "author": "squarooticus",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's definitely a risk, especially if the DORMS server serves only DORMS requests and only serves such requests for a limited set of multicast content: from that you can deduce intent, even if the requests themselves are encrypted. This kind of traffic analysis for linkability can't be dealt with in a one-off manner, and is hardly unique to multicast. It really needs to be solved in aggregate, e.g., by using a single site to serve a large, heterogeneous set of content making it difficult to deduce the intent of any individual client without actually seeing the plaintext request. (If this isn't in the privacy considerations, it probably should be.)",
+          "createdAt": "2025-06-27T17:28:29Z",
+          "updatedAt": "2025-06-27T17:28:29Z"
+        }
+      ]
     },
     {
       "number": 28,
       "id": "I_kwDOEmn6ks63b43K",
       "title": "DORMS: Editorial Nits",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/28",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Some slightly confusing sentences:\n- \"This supplemental information is sometimes needed by entities engaged in delivery or processing of the traffic to handle the traffic according to their requirements.\" \n- \"However, clients with out of band knowledge about the scope of the expected contents MAY issue requests for (S,G) metadata narrowed only by the source-address, or not narrowed at all.\"\n",
       "createdAt": "2025-05-20T16:04:28Z",
-      "updatedAt": "2025-05-20T16:04:28Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-26T14:00:19Z",
+      "closedAt": "2025-06-26T14:00:19Z",
       "comments": []
     }
   ],
@@ -649,24 +703,26 @@
       "id": "PR_kwDOEmn6ks6Zugqe",
       "title": "Issues 20, 21, 26 and 28",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/29",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #20, #21, #26, #28 ",
       "createdAt": "2025-06-09T18:19:08Z",
-      "updatedAt": "2025-06-24T17:57:19Z",
+      "updatedAt": "2025-06-26T13:59:48Z",
       "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
       "baseRefName": "master",
       "baseRefOid": "b9f8db67f1c7ea9cdb3dfdfd9bfcf9fda12e0153",
       "headRepository": "MaxF12/ietf-dorms-cluster",
       "headRefName": "DormsGenIssues",
-      "headRefOid": "91a064e9f4157043144f66cede74144531467ff3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6fc1159efcf14c8136934d628fa91db1d4f082f0",
+      "closedAt": "2025-06-26T13:59:47Z",
+      "mergedAt": "2025-06-26T13:59:47Z",
+      "mergedBy": "squarooticus",
+      "mergeCommit": {
+        "oid": "e2715871f692e5017c7a4c54208d2e7d9bddd10f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -690,6 +746,62 @@
           ]
         }
       ]
+    },
+    {
+      "number": 30,
+      "id": "PR_kwDOEmn6ks6cPyvT",
+      "title": "Issue 27",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/30",
+      "state": "MERGED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #27 ",
+      "createdAt": "2025-06-26T14:27:19Z",
+      "updatedAt": "2025-06-27T17:28:53Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "e2715871f692e5017c7a4c54208d2e7d9bddd10f",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "27",
+      "headRefOid": "cae69096650b1216e63a182fb3871d09310571f5",
+      "closedAt": "2025-06-27T17:28:53Z",
+      "mergedAt": "2025-06-27T17:28:53Z",
+      "mergedBy": "squarooticus",
+      "mergeCommit": {
+        "oid": "8fc20fa6552cec5a341842afc99740e909136e66"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 31,
+      "id": "PR_kwDOEmn6ks6cQGUO",
+      "title": "Removal of in document issues",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/31",
+      "state": "MERGED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Should close #23, #22 and #24, might need to take another look at #25.",
+      "createdAt": "2025-06-26T14:57:07Z",
+      "updatedAt": "2025-06-27T17:30:47Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "e2715871f692e5017c7a4c54208d2e7d9bddd10f",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "JakesIssues",
+      "headRefOid": "05195f8eec77773fb78294d01a4ecabfbe0a5d74",
+      "closedAt": "2025-06-27T17:30:47Z",
+      "mergedAt": "2025-06-27T17:30:47Z",
+      "mergedBy": "squarooticus",
+      "mergeCommit": {
+        "oid": "2672c53c8ce1474760e7a98893efc8fcfe8fd765"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
