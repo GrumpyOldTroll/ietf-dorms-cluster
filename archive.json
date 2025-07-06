@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-29T01:45:55.249258+00:00",
+  "timestamp": "2025-07-06T01:44:24.128046+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -406,15 +406,15 @@
       "id": "I_kwDOEmn6ks627dXl",
       "title": "DORMS: Building issue/ YANG",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/22",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Also moving Jakes comments for Dorms from the DOC:\n\nJake:  building the draft without this line produces a warning about no reference to [[RFC6991](https://maxf12.github.io/ietf-dorms-cluster/draft-ietf-mboned-dorms.html#RFC6991)] or [[RFC8294](https://maxf12.github.io/ietf-dorms-cluster/draft-ietf-mboned-dorms.html#RFC8294)], but these are imported in the yang model. RFC 8407 requires the normative reference to 8294 (there's an exception for 6991 but I'm not sure why and it doesn't seem forbidden).",
       "createdAt": "2025-05-16T13:37:20Z",
-      "updatedAt": "2025-06-26T14:53:19Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-04T13:10:41Z",
+      "closedAt": "2025-07-04T13:10:41Z",
       "comments": [
         {
           "author": "MaxF12",
@@ -454,15 +454,15 @@
       "id": "I_kwDOEmn6ks627eAw",
       "title": "DORMS: Section 7.1",
       "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/24",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MaxF12",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Jake: [Section 7.1] is intended to be the template from https://trac.ietf.org/trac/ops/wiki/yang-security-guidelines, as required by https://datatracker.ietf.org/doc/html/rfc8407#section-3.7. Individual nodes are not listed because blanket statements in that section covere them.",
       "createdAt": "2025-05-16T13:38:27Z",
-      "updatedAt": "2025-06-26T14:54:38Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-04T13:10:35Z",
+      "closedAt": "2025-07-04T13:10:35Z",
       "comments": [
         {
           "author": "MaxF12",
