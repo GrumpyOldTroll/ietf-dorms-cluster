@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-06T01:44:24.128046+00:00",
+  "timestamp": "2025-07-22T01:42:47.198701+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -565,6 +565,38 @@
       "createdAt": "2025-05-20T16:04:28Z",
       "updatedAt": "2025-06-26T14:00:19Z",
       "closedAt": "2025-06-26T14:00:19Z",
+      "comments": []
+    },
+    {
+      "number": 32,
+      "id": "I_kwDOEmn6ks7BpqEY",
+      "title": "CBACC: Section 2.3.1",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/32",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently Section 2.3.1 is still missing, Brians comments from review: \n\nParallel to current discussions in SCONE, which is dealing with an adjacent\nproblem (throughput guidance for unicast flows to avoid traffic shapers, which\nare their own kind of single-point circuit breaker), the choice of a timescale\nis important when defining a trigger function, and I expect the currently TBD\nsection 2.3.1 will go into this in some detail when it is no longer TBD.",
+      "createdAt": "2025-07-21T14:34:45Z",
+      "updatedAt": "2025-07-21T14:34:45Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 33,
+      "id": "I_kwDOEmn6ks7Bpq1T",
+      "title": "CBACC: Better mapping to 8084",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/issues/33",
+      "state": "OPEN",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From Brians review:\n\nThis document maps its concepts incompletely to the terminology of RFC\n8084, in a way that I found (as someone who also had to reread 8084 to complete\nthis review) found confusing. Pointedly 8084 assumes a feedback loop where the\negress meter (on the downstream end of a protected path) causes the ingress\nmeter to trigger when the circuit breaker trips, while this document seems to\nassume that the control point is at the egress meter. I'm not actually certain\nwhether this matters, since tripping downstream will eventually unload the\nupstream path. I also note that the authors note that other reviewers found the\n8084 terminology confusing. It probably makes sense for this document to note\nexplicitly that it is modifying the architectural assumptions in 8084\n(replacing an \"ingress meter\" with an ingress rate declaration via netconf, and\nmoving the control point forward)",
+      "createdAt": "2025-07-21T14:35:44Z",
+      "updatedAt": "2025-07-21T14:35:44Z",
+      "closedAt": null,
       "comments": []
     }
   ],
