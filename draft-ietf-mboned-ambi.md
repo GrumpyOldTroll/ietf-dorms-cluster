@@ -232,6 +232,30 @@ See also work-in-progress: <https://squarooticus.github.io/draft-krose-multicast
 
 ## Overview
 
+### Joining a manifest stream
+Multicast receivers wishing to learn if the multicast stream supports AMBI may use DORMS to discover metadata specific to that stream. If supported, the metadata will include a manifest-stream entry that, in accordance with the YANG model (see {{ref-yang}}), has the following parameters: 
+
+#### ID
+The Manifest ID referenced in a manifest.
+
+#### URI
+A URI pointing to the manifest stream. The exact scheme is dependent on which transport is being used (see {{ref-transport}}). 
+
+#### Hash algorithm
+The hash algorithm which will is being used to generate the digests. 
+
+#### Data packet hold time
+The amount of time in milliseconds the receiver should hold unauthenticated data packets before discarding them. 
+
+#### Digest hold time
+The amount of time in milliseconds the receiver should hold digests that have not been used to authenticate a data packet before discarding them.
+
+#### Expiration
+The date and time when the manifest stream will expire and stop providing authentication. If empty, the stream will not expire at a specific time. 
+
+The receiver can then receive the manifest stream by subscribing to the specified URI. The receiver is REQUIRED to use the specified hash algorithm while the provided hold times SHOULD be used. 
+
+### Authenticating packets
 In order to authenticate a data packet, AMBI receivers need to hold these three pieces of information at the same time:
 
  * the data packet
