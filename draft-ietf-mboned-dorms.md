@@ -440,6 +440,7 @@ DORMS servers SHOULD use NACM to constrain write accesses.
 However, note that scalability considerations described in {{provisioning}} might make the naive use of NACM intractable in many deployments, for a broadcast use case.
 So alternative methods to constrain write access to the metadata MAY be used instead of or in addition to NACM.
 In such deployments, if NACM is not used, equivalent access controls (e.g., gateway ACLs, origin-only write paths) MUST be provided.
+For example, some deployments that use a CDN or caching layer of discoverable DORMS servers might uniformly provide read-only access through the caching layer, and might require the trusted writers of configuration to use an alternate method of accessing the underlying database such as connecting directly to the origin, or requiring the use of a non-RESTCONF mechanism for editing the contents of the metadata.
 
 The data nodes defined in this YANG module are writable because some deployments might manage the contents in the database by using normal RESTCONF editing operations with NACM, but in typical deployments it's expected that DORMS clients will generally have read-only access.
 For the reasons and requirements described in {{exposure}}, none of the data nodes in the DORMS module or its extensions contain sensitive data.
