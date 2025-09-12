@@ -42,6 +42,7 @@ normative:
   RFC2317:
   RFC2782:
   RFC3596:
+  RFC6020:
   RFC6241:
   RFC6991:
   RFC7950:
@@ -54,7 +55,7 @@ normative:
   whatwg-fetch:
     target: https://fetch.spec.whatwg.org/
     title: "WHATWG Fetch Living Standard"
-    date: October 2020
+    date: October 2025
 
 informative:
   RFC1034:
@@ -67,7 +68,6 @@ informative:
   RFC4604:
   RFC4607:
   RFC5013:
-  RFC6020:
   RFC6335:
   RFC6415:
   RFC7858:
@@ -77,6 +77,7 @@ informative:
   I-D.draft-ietf-mboned-ambi:
   I-D.draft-ietf-core-comi:
   I-D.draft-openconfig-rtgwg-gnmi-spec:
+  I-D.ietf-netmod-rfc8407bis:
 
 --- abstract
 
@@ -408,11 +409,13 @@ YANG-MODULE ietf-dorms.yang
 
 ## YANG Model Considerations {#yang-considerations}
 
+This section follows the template in {{I-D.ietf-netmod-rfc8407bis}}.
+
 The YANG module specified in this document defines a schema for data that is designed to be accessed via RESTCONF {{RFC8040}}.
 The lowest RESTCONF layer is HTTPS, and the mandatory-to-implement secure transport is TLS {{RFC8446}}.
 
 There are a number of data nodes defined in this YANG module that are writable/creatable/deletable (i.e., config true, which is the default). These data nodes may be considered sensitive or vulnerable in some network environments.
-Write operations (e.g., edit-config) to these data nodes without proper protection can have a negative effect on network operations. These are the subtrees and data nodes and their sensitivity/vulnerability:
+Write operations (e.g., RESTCONF HTTP PATCH/PUT/POST) to these data nodes without proper protection can have a negative effect on network operations. These are the subtrees and data nodes and their sensitivity/vulnerability:
 
 Subtrees:
 
@@ -431,18 +434,19 @@ These data nodes refer to the characteristics of a stream of data packets being 
 If an unauthorized or incorrect edit is made, receivers would no longer be able to associate the data stream to the correct metadata, resulting in a denial of service for end users that rely on the metadata to properly process the data packets.
 Therefore DORMS servers MUST constrain write access to ensure that unauthorized users cannot edit the data published by the server.
 
-The Network Configuration Access Control Model (NACM) {{RFC8341}} provides the means to restrict access for particular NETCONF or RESTCONF users to a preconfigured subset of all available NETCONF or RESTCONF protocol operations and content.
-DORMS servers MAY use NACM to constrain write accesses.
+The Network Configuration Access Control Model (NACM) {{RFC8341}} provides the means to restrict access for particular RESTCONF users to a preconfigured subset of protocol operations and content.
+DORMS servers SHOULD use NACM to constrain write accesses.
 
 However, note that scalability considerations described in {{provisioning}} might make the naive use of NACM intractable in many deployments, for a broadcast use case.
 So alternative methods to constrain write access to the metadata MAY be used instead of or in addition to NACM.
-For example, some deployments that use a CDN or caching layer of discoverable DORMS servers might uniformly provide read-only access through the caching layer, and might require the trusted writers of configuration to use an alternate method of accessing the underlying database such as connecting directly to the origin, or requiring the use of a non-RESTCONF mechanism for editing the contents of the metadata.
+In such deployments, if NACM is not used, equivalent access controls (e.g., gateway ACLs, origin-only write paths) MUST be provided.
 
 The data nodes defined in this YANG module are writable because some deployments might manage the contents in the database by using normal RESTCONF editing operations with NACM, but in typical deployments it's expected that DORMS clients will generally have read-only access.
 For the reasons and requirements described in {{exposure}}, none of the data nodes in the DORMS module or its extensions contain sensitive data.
 
 DORMS servers MAY provide read-only access to clients for publicly available metadata without authenticating the clients.
 That is, under the terms in Section 2.5 of {{RFC8040}} read-only access to publicly available data MAY be treated as unprotected resources.
+
 
 ## Exposure of Metadata {#exposure}
 
