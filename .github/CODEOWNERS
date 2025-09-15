@@ -1,0 +1,5 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-ietf-mboned-ambi.md jakeholland.net@gmail.com krose@krose.org mfranke@inet.tu-berlin.de
+draft-ietf-mboned-cbacc.md jakeholland.net@gmail.com krose@krose.org mfranke@inet.tu-berlin.de
+draft-ietf-mboned-dorms.md jakeholland.net@gmail.com krose@krose.org mfranke@inet.tu-berlin.de
