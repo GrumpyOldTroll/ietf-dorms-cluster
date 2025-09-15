@@ -20,10 +20,16 @@ subject to a Simplified BSD License) in Contributions.
 ## Other Resources
 
 
+
 Discussion of this work occurs on the
 
+
+
 [mboned working group mailing list](https://mailarchive.ietf.org/arch/browse/mboned/)
+
+
 ([subscribe](https://www.ietf.org/mailman/listinfo/mboned)).  In addition to
+
 contributions in github, you are encouraged to participate in discussions there.
 
 **Note**: Some working groups adopt a policy whereby substantive discussion of
