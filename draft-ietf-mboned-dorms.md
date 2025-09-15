@@ -18,7 +18,7 @@ author:
     ins: J. Holland
     name: Jake Holland
     org: Akamai Technologies, Inc.
-    street: 150 Broadway
+    street: 145 Broadway
     city: Cambridge, MA 02144
     country: United States of America
     email: jakeholland.net@gmail.com
@@ -42,6 +42,7 @@ normative:
   RFC2317:
   RFC2782:
   RFC3596:
+  RFC6020:
   RFC6241:
   RFC6991:
   RFC7950:
@@ -67,7 +68,6 @@ informative:
   RFC4604:
   RFC4607:
   RFC5013:
-  RFC6020:
   RFC6335:
   RFC6415:
   RFC7858:
@@ -140,7 +140,8 @@ In such a case, the network in question could learn these bitrates from the meta
 ### Authentication
 
 Another use case for DORMS is providing information for use in authenticating the multicast traffic before accepting it for forwarding by a network device, or for processing by a receiving application.
-As DORMS metadata is transmitted over a secure and authenticated connection, it can act as a security anchor for data required to verify the authenticity of multicast packets. {{I-D.draft-ietf-mboned-ambi}} defines some DORMS extensions to support this use case.
+As DORMS metadata is transmitted over a secure and authenticated connection, it can act as a security anchor for data required to verify the authenticity of multicast packets.
+{{I-D.draft-ietf-mboned-ambi}} defines some DORMS extensions to support this use case.
 
 ### Content Description
 
@@ -169,7 +170,7 @@ Substantial discussion of this document should take place on the MBONED working 
  * Search: https://mailarchive.ietf.org/arch/browse/mboned/
 
 
-# Discovery and Metdata Retrieval {#disco}
+# Discovery and Metadata Retrieval {#disco}
 
 A client that needs metadata about an (S,G) MAY attempt to discover metadata for the (S,G) using the mechanisms defined here, and MAY use the metadata received to manage the forwarding or processing of the packets in the channel.
 
@@ -181,7 +182,7 @@ In general, a DORMS client might learn of an (S,G) by any means, so describing a
 But for example, a multicast receiver application that is a DORMS client might learn about an (S,G) by getting signals from inside the application logic, such as a selection made by a user, or a scheduled API call that reacts to updates in a library provided by a service operator.
 
 As another example, an on-path router that’s a DORMS client might instead learn about an (S,G) by receiving a PIM message or an IGMP or MLD membership report indicating a downstream client has tried to subscribe to an (S,G).
-Such a router might use information learned from the DORMS metadata to make an access control decision about whether to propagate the join futher upstream in the network.
+Such a router might use information learned from the DORMS metadata to make an access control decision about whether to propagate the join further upstream in the network.
 
 Other approaches for learning relevant (S,G)s could be driven by monitoring a route reflector to discover channels that are being actively forwarded, for a purpose such as monitoring network health.
 
@@ -193,7 +194,7 @@ Use of the DNS Bootstrap is OPTIONAL for clients with an alternate method of obt
 This mechanism only works for source-specific multicast (SSM) channels.
 The source address of the (S,G) is reversed and used as an index into one of the reverse mapping trees (in-addr.arpa for IPv4, as described in Section 3.5 of {{RFC1035}}, or ip6.arpa for IPv6, as described in Section 2.5 of {{RFC3596}}).
 
-When a DORMS client needs metadata for an (S,G), for example when handling a new join for that (S,G) and looking up the authentication methods that are available, the DORMS client can issue a DNS query for a SRV RR using the "dorms" service name with the domain from the reverse mapping tree, combining them as described in {{RFC2782}}.
+When a DORMS client needs metadata for an (S,G), for example when handling a new join for that (S,G) and looking up the authentication methods that are available, the DORMS client can issue a DNS query for an SRV RR using the "dorms" service name with the domain from the reverse mapping tree, combining them as described in {{RFC2782}}.
 
 For example, a client looking for metadata about the channel with a source IP of 2001:db8::a and the group address of ff3e::8000:d, the client would start the DNS bootstrap step by performing a query for the SRV RRType for the following domain (after removing the line break inserted for editorial reasons):
 
@@ -228,7 +229,7 @@ Some examples outlining this need are described in {{RFC2317}}.
 ## RESTCONF Bootstrap
 
 Once a DORMS server has been chosen (whether via an SRV RR from a DNS response or via some other method), RESTCONF provides all the information necessary to determine the versions and url paths for metadata from the server.
-A walkthrough is provided here for a sequence of example requests and responses from a receiver connecting to a new DORMS server.
+A walkthrough is provided here for a sequence of example requests and responses between a DORMS client and a new DORMS server.
 
 ### Root Resource Discovery
 
@@ -236,7 +237,7 @@ As described in Section 3.1 of {{RFC8040}} and {{RFC6415}}, the RESTCONF server 
 
 Example:
 
-The receiver might send:
+The client might send:
 
 ~~~
      GET /.well-known/host-meta.json HTTP/1.1
@@ -248,7 +249,7 @@ The server might respond as follows:
 
 ~~~
       HTTP/1.1 200 OK
-      Date: Tue, 09 Jul 2021 20:56:00 GMT
+      Date: Tue, 09 Jul 2025 20:56:00 GMT
       Server: example-server
       Cache-Control: no-cache
       Content-Type: application/json
@@ -263,13 +264,13 @@ The server might respond as follows:
       }
 ~~~
 
-### Yang Library Version
+### YANG Library Version
 
 As described in Section 3.3.3 of {{RFC8040}}, the yang-library-version leaf is required by RESTCONF, and can be used to determine the schema of the ietf-yang-library module:
 
 Example:
 
-The receiver might send:
+The client might send:
 
 ~~~
       GET /top/restconf/yang-library-version HTTP/1.1
@@ -281,7 +282,7 @@ The server might respond as follows:
 
 ~~~
       HTTP/1.1 200 OK
-      Date: Tue, 09 Jul 2021 20:56:01 GMT
+      Date: Tue, 09 Jul 2025 20:56:01 GMT
       Server: example-server
       Cache-Control: no-cache
       Content-Type: application/yang-data+json
@@ -293,17 +294,17 @@ The server might respond as follows:
 
 If a DORMS client determines through examination of the yang-library-version that it may not understand the responses of the server due to a version mismatch, the server qualifies as a candidate for adding to an ignore list as described in {{ignore}}.
 
-### Yang Library Contents
+### YANG Library Contents
 
-After checking that the version of the yang-library module will be understood by the receiver, the client can check that the desired metadata modules are available on the DORMS server by fetching the module-state resource from the ietf-yang-library module.
+After checking that it supports the version of the yang-library module offered by the server, the client can check that the desired metadata modules are available on the DORMS server by fetching the module-state resource from the ietf-yang-library module.
 
 Example:
 
-The receiver might send:
+The client might send:
 
 ~~~
       GET /top/restconf/data/ietf-yang-library:modules-state/\
-          module=ietf-dorms,2021-07-08
+          module=ietf-dorms,2025-09-15
       Host: dorms-restconf.example.com
       Accept: application/yang-data+json
 ~~~
@@ -312,7 +313,7 @@ The server might respond as follows:
 
 ~~~
     HTTP/1.1 200 OK
-    Date: Tue, 09 Jul 2021 20:56:02 GMT
+    Date: Tue, 09 Jul 2025 20:56:02 GMT
     Server: example-server
     Cache-Control: no-cache
     Content-Type: application/yang-data+json
@@ -323,9 +324,9 @@ The server might respond as follows:
           "conformance-type": "implement",
           "name": "ietf-dorms",
           "namespace": "urn:ietf:params:xml:ns:yang:ietf-dorms",
-          "revision": "2021-07-08",
+          "revision": "2025-09-15",
           "schema":
-              "https://example.com/yang/ietf-dorms@2021-07-08.yang"
+              "https://example.com/yang/ietf-dorms@2025-09-15.yang"
         }
       ]
     }
@@ -340,7 +341,7 @@ Once the expected DORMS version is confirmed, the client can retrieve the metada
 
 Example:
 
-The receiver might send:
+The client might send:
 
 ~~~
       GET /top/restconf/data/ietf-dorms:dorms/metadata/\
@@ -353,7 +354,7 @@ The server might respond as follows:
 
 ~~~
       HTTP/1.1 200 OK
-      Date: Tue, 09 Jul 2021 20:56:02 GMT
+      Date: Tue, 09 Jul 2025 20:56:02 GMT
       Server: example-server
       Cache-Control: no-cache
       Content-Type: application/yang-data+json
@@ -389,7 +390,7 @@ A review of some of the potential consequences of unrestricted CORS access is gi
 The primary purpose of the YANG model defined here is to serve as a scaffold for the more useful metadata that will extend it.
 See {{motivation}} for some example use cases that can be enabled by the use of DORMS extensions.
 
-## Yang Tree
+## YANG Tree
 
 The tree diagram below follows the notation defined in {{RFC8340}}.
 
@@ -398,7 +399,7 @@ YANG-TREE ietf-dorms.yang
 ~~~~~~~~~
 {: title="DORMS Tree Diagram" }
 
-## Yang Module
+## YANG Module
 
 ~~~~~~~~~
 YANG-MODULE ietf-dorms.yang
@@ -411,8 +412,10 @@ YANG-MODULE ietf-dorms.yang
 The YANG module specified in this document defines a schema for data that is designed to be accessed via RESTCONF {{RFC8040}}.
 The lowest RESTCONF layer is HTTPS, and the mandatory-to-implement secure transport is TLS {{RFC8446}}.
 
-There are a number of data nodes defined in this YANG module that are writable/creatable/deletable (i.e., config true, which is the default). These data nodes may be considered sensitive or vulnerable in some network environments.
-Write operations (e.g., edit-config) to these data nodes without proper protection can have a negative effect on network operations. These are the subtrees and data nodes and their sensitivity/vulnerability:
+There are a number of data nodes defined in this YANG module that are writable/creatable/deletable (i.e., config true, which is the default).
+These data nodes may be considered sensitive or vulnerable in some network environments.
+Write operations to these data nodes (e.g., via HTTP POST/PUT/PATCH/DELETE methods) without proper protection can have a negative effect on network operations.
+These are the subtrees and data nodes and their sensitivity/vulnerability:
 
 Subtrees:
 
@@ -428,17 +431,17 @@ Data nodes:
  - /dorms/metadata/sender/group/udp-stream/port
 
 These data nodes refer to the characteristics of a stream of data packets being sent on a multicast channel.
-If an unauthorized or incorrect edit is made, receivers would no longer be able to associate the data stream to the correct metadata, resulting in a denial of service for end users that rely on the metadata to properly process the data packets.
-Therefore DORMS servers MUST constrain write access to ensure that unauthorized users cannot edit the data published by the server.
+If an unauthorized or incorrect edit is made, receivers would no longer be able to associate the data stream to the correct metadata, resulting in a denial-of-service for end users that rely on the metadata to properly process the data packets.
+Therefore, DORMS servers MUST constrain write access to ensure that unauthorized users cannot edit the data published by the server.
 
 The Network Configuration Access Control Model (NACM) {{RFC8341}} provides the means to restrict access for particular NETCONF or RESTCONF users to a preconfigured subset of all available NETCONF or RESTCONF protocol operations and content.
-DORMS servers MAY use NACM to constrain write accesses.
+DORMS servers SHOULD use NACM to constrain write accesses if NETCONF or RESTCONF are configured to offer any write access at all.
 
 However, note that scalability considerations described in {{provisioning}} might make the naive use of NACM intractable in many deployments, for a broadcast use case.
 So alternative methods to constrain write access to the metadata MAY be used instead of or in addition to NACM.
-For example, some deployments that use a CDN or caching layer of discoverable DORMS servers might uniformly provide read-only access through the caching layer, and might require the trusted writers of configuration to use an alternate method of accessing the underlying database such as connecting directly to the origin, or requiring the use of a non-RESTCONF mechanism for editing the contents of the metadata.
+For example, some deployments that use a CDN or caching layer of discoverable DORMS servers might uniformly provide read-only access through the caching layer, and require the trusted writers of configuration to use an alternate method for accessing the underlying database such as connecting directly to the origin, or requiring the use of a non-RESTCONF mechanism (such as an HTTPS API requiring some kind of client authentication) for editing the contents of the metadata.
 
-The data nodes defined in this YANG module are writable because some deployments might manage the contents in the database by using normal RESTCONF editing operations with NACM, but in typical deployments it's expected that DORMS clients will generally have read-only access.
+The data nodes defined in this YANG module are writable because some deployments might manage the contents in the database by using normal RESTCONF editing operations with NACM, but in typical deployments it is expected that DORMS clients will generally have read-only access.
 For the reasons and requirements described in {{exposure}}, none of the data nodes in the DORMS module or its extensions contain sensitive data.
 
 DORMS servers MAY provide read-only access to clients for publicly available metadata without authenticating the clients.
@@ -446,7 +449,7 @@ That is, under the terms in Section 2.5 of {{RFC8040}} read-only access to publi
 
 ## Exposure of Metadata {#exposure}
 
-Although some DORMS servers MAY restrict access based on client identity, as described in Section 2.5 of {{RFC8040}}, many DORMS servers will use the ietf-dorms YANG model to publish information without restriction, and even DORMS servers requiring client authentication will inherently, because of the purpose of DORMS, be providing the DORMS metadata to potentially many receivers.
+Although some DORMS servers MAY restrict access based on client identity, as described in Section 2.5 of {{RFC8040}}, many DORMS servers will use the ietf-dorms YANG model to publish information without restriction, and even DORMS servers requiring client authentication will inherently be providing the DORMS metadata to a multitude of multicast receivers acting as DORMS clients.
 
 Accordingly, future YANG modules that augment data paths under "ietf-dorms:dorms" MUST NOT include any sensitive data unsuitable for public dissemination in those data paths.
 
@@ -458,16 +461,18 @@ DORMS alone does not provide any such mechanisms, and users of DORMS can be expe
 The provisions of Section 2 of {{RFC8040}} provide secure communication requirements that are already required of DORMS servers, since they are RESTCONF servers.
 All RESTCONF requirements and security considerations remain in force for DORMS servers.
 
-It is intended that security related metadata about the SSM channels such as public keys for use with cryptographic algorithms may be delivered over the RESTCONF connection, and that information available from this connection can be used as a trust anchor.
+It is intended that security-related metadata about the SSM channels such as public keys for use with cryptographic algorithms may be delivered over the RESTCONF connection, and that information available from this connection can be used as a trust anchor.
 The secure transport provided by these minimum requirements are relied upon to provide authenticated delivery of these trust anchors, once a connection with a trusted DORMS server has been established.
 
 ## Record-Spoofing
 
- When using the DNS Boostrap method of discovery described in {{dns-boot}}, the SRV resource record contains information that SHOULD be communicated to the DORMS client without being modified.  The method used to ensure the result was unmodified is up to the client.
+When using the DNS Bootstrap method of discovery described in {{dns-boot}}, the SRV resource record contains information that MUST be communicated to the DORMS client without being modified.
+The method used to ensure the result was unmodified is up to the client.
 
- There must be a trust relationship between the end consumer of this resource record and the DNS server.
-This relationship may be end-to-end DNSSEC validation or a secure connection to a trusted DNS server that provides end-to-end safety to prevent record-spoofing of the response from the trusted server.
-The connection to the trusted server can use any secure channel, such as with a TSIG {{RFC8945}} or SIG(0) {{RFC2931}} channel, a secure local channel on the host, DNS over TLS {{RFC7858}}, DNS over HTTPS {{RFC8484}}, or some other mechanism that provides authentication of the RR.
+There must be a trust relationship between the end consumer of this resource record and the DNS server.
+This relationship may be end-to-end DNSSEC validation or a secure connection to a trusted resolver that itself makes use of mechanisms for ensuring RR integrity (e.g., by enforcing DNSSEC validation on recursive requests) to prevent record-spoofing of the response from the trusted server.
+The connection to this trusted resolver can use any secure channel, such as with a TSIG {{RFC8945}} or SIG(0) {{RFC2931}} channel, a secure local channel on the host, DNS over TLS {{RFC7858}}, or DNS over HTTPS {{RFC8484}}.
+Any combination of mechanisms may be employed that together guarantee end-to-end integrity of the intended RR.
 
 If a DORMS client accepts a maliciously crafted SRV record, the client could connect to a server controlled by the attacker, and use metadata provided by them.
 The consequences of trusting maliciously crafted metadata could range from attacks against the DORMS client's parser of the metadata (via malicious constructions of the formatting of the data) to arbitrary disruption of the decisions the DORMS client makes as a result of processing validly constructed metadata.
@@ -476,7 +481,7 @@ Clients MAY use other secure methods to explicitly associate an (S,G) with a set
 
 ## CORS considerations {#security-cors}
 
-As described in {{cors-considerations}}, it's RECOMMENDED that DORMS servers provide appropriate restrictions to ensure only authorized web pages access metadata for their (S,G)s from the widely deployed base of secure browsers that use the CORS protocol according to {{whatwg-fetch}}.
+As described in {{cors-considerations}}, it is RECOMMENDED that DORMS servers provide appropriate restrictions to ensure only authorized web pages access metadata for their (S,G)s from the widely deployed base of secure browsers that use the CORS protocol according to {{whatwg-fetch}}.
 
 Providing '\*' for the allowed origins exposes the DORMS-based metadata to access by scripts in all web pages, which opens the possibility of certain kinds of attacks against networks where browsers have support for joining multicast (S,G)s.
 
@@ -488,9 +493,9 @@ Further, if the malicious script can be distributed to many different users with
 The distributed subscription requests across the receiving network could overflow limits for the receiving network as a whole, essentially causing the websites displaying the ad to participate in an overjoining attack (see Appendix A of {{I-D.draft-ietf-mboned-cbacc}}).
 
 Even if network safety mechanisms protect the network from the worst effects of oversubscription, the population counts for the multicast subscriptions could be disrupted by this kind of attack, and therefore push out legitimately requested traffic that's being consumed by real users.
-For a legitimately popular event, this could cause a widespread disruption to the service if it's successfully pushed out.
+For a legitimately popular event, this could cause a widespread disruption to the service if it is successfully pushed out.
 
-A denial of service attack of this sort would be thwarted by restricting the access to (S,G)s to authorized websites through the use of properly restricted CORS headers.
+A denial-of-service attack of this sort would be thwarted by restricting the access to (S,G)s to authorized websites through the use of properly restricted CORS headers.
 
 # Privacy Considerations
 
@@ -506,7 +511,7 @@ At the subscriber edge of a multicast-capable network, where the network operato
 Subscription to a multicast channel generally only exposes the IGMP or MLD membership report to others on the same LAN, and as the membership propagates through a multicast-capable network, it ordinarily gets aggregated with other end users.
 
 However, a RESTCONF connection is a unicast connection, and exposes a different set of information to the operator of the RESTCONF server, including IP address and timing about the requests made.
-Where DORMS access becomes required to succeed a multicast join (for example, as expected in a browser deployment), this can expose new information about end users relative to services based solely on multicast streams.
+Where DORMS access becomes required for a successful multicast join (for example, as expected in a browser deployment), this can expose new information about end users relative to services based solely on multicast streams.
 The information disclosure occurs by giving the DORMS service operator information about the client's IP and the channels the client queried.
 Additionally, an on-path observer may infer multicast subscription intent by observing client traffic directed to a known DORMS server.
 
@@ -519,7 +524,7 @@ In some deployments it may be possible to use a proxy that aggregates many end u
 In contrast to many common RESTCONF deployments that are intended to provide configuration management for a service to a narrow set of authenticated administrators, DORMS servers often provide read-only metadata for public access or for a very large set of end receivers, since it provides metadata in support of multicast data streams and multicast can scale to very large audiences.
 
 Operators are advised to provision the DORMS service in a way that will scale appropriately to the size of the expected audience.
-Specific advice on such scaling is out of scope for this document, but some of the mechanisms outlined in {{RFC3040}} or other online resources might be useful, depending on the expected number of receivers.
+Specific advice on such scaling is out of scope for this document, but some of the mechanisms outlined in {{RFC3040}} or other online resources might be useful, depending on the expected number of clients.
 
 ## Data Scoping  {#scoping}
 
@@ -541,7 +546,7 @@ If a DORMS client reaches a DORMS server but determines through examination of r
 A client using the DNS Bootstrap discovery method in {{dns-boot}} would treat servers in its ignore list as unreachable for the purposes of processing the SRV RR as described in {{RFC2782}}.
 (For example, a client might end up selecting a server with a less-preferred priority than servers in its ignore list, even if an HTTPS connection could have been formed successfully with some of those servers.)
 
-If an ignore list is maintained, entries SHOULD time out and allow for re-checking after either the cache expiration time from the DNS response that caused the server to be added to the ignore list, or for a configurable hold-down time that has a default value no shorter than 1 hour and no longer than 24 hours.
+If an ignore list is maintained, entries SHOULD time out and allow for re-checking after a configurable hold-down time that has a default value no shorter than 1 hour and no longer than 24 hours.
 
 # IANA Considerations
 
