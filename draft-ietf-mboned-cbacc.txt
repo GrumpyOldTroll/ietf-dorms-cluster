@@ -5,9 +5,9 @@
 Mboned                                                        J. Holland
 Internet-Draft                                                   K. Rose
 Intended status: Standards Track               Akamai Technologies, Inc.
-Expires: 8 November 2025                                       M. Franke
+Expires: 19 March 2026                                         M. Franke
                                                                TU Berlin
-                                                              7 May 2025
+                                                       15 September 2025
 
 
               Circuit Breaker Assisted Congestion Control
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 November 2025.
+   This Internet-Draft will expire on 19 March 2026.
 
 Copyright Notice
 
@@ -537,7 +537,7 @@ Table of Contents
 3.2.  Module
 
    <CODE BEGINS>
-    file ietf-cbacc@2025-05-07.yang
+    file ietf-cbacc@2025-09-15.yang
    module ietf-cbacc {
      yang-version 1.1;
 
@@ -706,11 +706,11 @@ Table of Contents
               ambi-04>.
 
    [I-D.draft-ietf-mboned-dorms]
-              Holland, J., "Discovery Of Restconf Metadata for Source-
-              specific multicast", Work in Progress, Internet-Draft,
-              draft-ietf-mboned-dorms-04, 7 March 2022,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-mboned-
-              dorms-04>.
+              Holland, J., Rose, K., and M. Franke, "Discovery Of
+              Restconf Metadata for Source-specific multicast", Work in
+              Progress, Internet-Draft, draft-ietf-mboned-dorms-06, 5
+              July 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-mboned-dorms-06>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -882,7 +882,7 @@ Authors' Addresses
 
    Jake Holland
    Akamai Technologies, Inc.
-   150 Broadway
+   145 Broadway
    Cambridge, MA 02144,
    United States of America
    Email: jakeholland.net@gmail.com
