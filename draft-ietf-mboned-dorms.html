@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Holland, et al.</td>
-<td class="center">Expires 19 March 2026</td>
+<td class="center">Expires 20 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mboned-dorms-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-15" class="published">15 September 2025</time>
+<time datetime="2025-09-16" class="published">16 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-19">19 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-20">20 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1114,7 +1114,7 @@ A new service name and the new YANG module are defined.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1689,17 +1689,7 @@ See <a href="#motivation" class="auto internal xref">Section 1.3</a> for some ex
 <span id="name-dorms-tree-diagram"></span><figure id="figure-1">
           <div class="alignLeft art-text artwork" id="section-3.1-2.1">
 <pre>
-module: ietf-dorms
-  +--rw dorms
-     +--rw metadata
-        +--rw sender* [source-address]
-           +--rw source-address    inet:ip-address-no-zone
-           +--rw group* [group-address]
-              +--rw group-address
-              |       rt-types:ip-multicast-group-address
-              +--rw udp-stream* [port]
-                 +--rw port    inet:port-number
-
+YANG-TREE ietf-dorms.yang
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
@@ -1712,113 +1702,10 @@ module: ietf-dorms
         <h3 id="name-yang-module">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
-<div class="breakable sourcecode" id="section-3.2-1">
-<pre>&lt;CODE BEGINS&gt; file ietf-dorms@2025-09-15.yang
-module ietf-dorms {
-  yang-version 1.1;
-
-  namespace "urn:ietf:params:xml:ns:yang:ietf-dorms";
-  prefix "dorms";
-
-  import ietf-inet-types {
-    prefix "inet";
-    reference "RFC 6991 Section 4";
-  }
-
-  import ietf-routing-types {
-    prefix "rt-types";
-    reference "RFC 8294";
-  }
-
-  organization "IETF MBONED (Multicast Backbone
-      Deployment) Working Group";
-
-  contact
-      "Author:   Jake Holland
-                 &lt;mailto:jholland@akamai.com&gt;
-      ";
-
-  description
-  "Copyright (c) 2025 IETF Trust and the persons identified as
-   authors of the code.  All rights reserved.
-
-   Redistribution and use in source and binary forms, with or
-   without modification, is permitted pursuant to, and subject to
-   the license terms contained in, the Simplified BSD License set
-   forth in Section 4.c of the IETF Trust's Legal Provisions
-   Relating to IETF Documents
-   (https://trustee.ietf.org/license-info).
-
-   This version of this YANG module is part of RFC XXXX
-   (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
-   for full legal notices.
-
-   The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
-   NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
-   'MAY', and 'OPTIONAL' in this document are to be interpreted as
-   described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
-   they appear in all capitals, as shown here.
-
-   This module contains the definition for the DORMS data type.
-   It provides out of band metadata about SSM channels.";
-
-  revision 2025-09-15 {
-    description "Draft version, post-early-review.";
-    reference
-        "draft-ietf-mboned-dorms";
-  }
-
-  container dorms {
-    description "Top-level DORMS container.";
-    container metadata {
-      description "Metadata scaffold for source-specific multicast
-          channels.";
-      list sender {
-        key source-address;
-        description "Sender for DORMS";
-
-        leaf source-address {
-          type inet:ip-address-no-zone;
-          mandatory true;
-          description
-              "The source IP address of a multicast sender.";
-        }
-
-        list group {
-          key group-address;
-          description "Metadata for a DORMS (S,G).";
-
-          leaf group-address {
-            type rt-types:ip-multicast-group-address;
-            mandatory true;
-            description "The group IP address for an (S,G).";
-          }
-          must '(re-match(./group-address, "[^:]*") and ' +
-                're-match(../source-address, "[^:]*")) or ' +
-               '(re-match(./group-address, ".*:.*") and ' +
-                're-match(../source-address, ".*:.*"))' {
-            error-message 'A group-address type must match '+
-                          'its parent source-address type';
-          }
-
-          list udp-stream {
-            key "port";
-            description
-                "Metadata for UDP traffic on a specific port.";
-            leaf port {
-              type inet:port-number;
-              mandatory true;
-              description
-                  "The UDP port of a data stream.";
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-&lt;CODE ENDS&gt;</pre><a href="#section-3.2-1" class="pilcrow">¶</a>
+<div class="alignLeft art-text artwork" id="section-3.2-1">
+<pre>
+YANG-MODULE ietf-dorms.yang
+</pre><a href="#section-3.2-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
