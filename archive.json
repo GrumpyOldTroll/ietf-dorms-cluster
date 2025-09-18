@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-14T01:24:15.507300+00:00",
+  "timestamp": "2025-09-18T01:18:04.282737+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -860,6 +860,48 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 35,
+      "id": "PR_kwDOEmn6ks6o4cbG",
+      "title": "fix YANG issues",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/35",
+      "state": "MERGED",
+      "author": "boucadair",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Please check RFC8407bis/RFC7950 for more details.",
+      "createdAt": "2025-09-16T14:48:20Z",
+      "updatedAt": "2025-09-16T17:14:37Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "d47729b5dfe8a899a428d0313fb9bbd769a1ab7e",
+      "headRepository": "boucadair/ietf-dorms-cluster",
+      "headRefName": "patch-1",
+      "headRefOid": "84890f9bf1494a54c64b2a0083543fbfc2350947",
+      "closedAt": "2025-09-16T17:14:37Z",
+      "mergedAt": "2025-09-16T17:14:37Z",
+      "mergedBy": "squarooticus",
+      "mergeCommit": {
+        "oid": "064633d287797358008ce84f5d39229ca0935d7e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEmn6ks7AlJQX",
+          "commit": {
+            "abbreviatedOid": "84890f9"
+          },
+          "author": "squarooticus",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-09-16T17:14:19Z",
+          "updatedAt": "2025-09-16T17:14:19Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
