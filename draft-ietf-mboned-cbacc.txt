@@ -5,9 +5,9 @@
 Mboned                                                        J. Holland
 Internet-Draft                                                   K. Rose
 Intended status: Standards Track               Akamai Technologies, Inc.
-Expires: 20 March 2026                                         M. Franke
+Expires: 16 April 2026                                         M. Franke
                                                                TU Berlin
-                                                       16 September 2025
+                                                         13 October 2025
 
 
               Circuit Breaker Assisted Congestion Control
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 March 2026.
+   This Internet-Draft will expire on 16 April 2026.
 
 Copyright Notice
 
@@ -61,35 +61,34 @@ Table of Contents
      1.1.  Background and Terminology
      1.2.  Venues for Contribution and Discussion
      1.3.  Non-obvious doc choices
-   2.  Circuit Breaker Behavior
-     2.1.  Functional Components
-       2.1.1.  Bitrate Advertisement
-       2.1.2.  Circuit Breaker Node
-       2.1.3.  Communication Method
-       2.1.4.  Measurement Function
-       2.1.5.  Trigger Function
-       2.1.6.  Reaction
-       2.1.7.  Feedback Control Mechanism
-     2.2.  States
-       2.2.1.  Interface State
-       2.2.2.  Flow State
-     2.3.  Implementation Design Considerations
-       2.3.1.  Oversubscription Thresholds
-       2.3.2.  Fairness Functions
-   3.  YANG Module
-     3.1.  Tree Diagram
-     3.2.  Module
-   4.  IANA Considerations
-     4.1.  YANG Module Names Registry
-     4.2.  The XML Registry
-   5.  Security Considerations
-     5.1.  Metadata Security
-     5.2.  Denial of Service
-       5.2.1.  State Overload
-   6.  Acknowledgements
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+     1.4.  Functional Components
+       1.4.1.  Bitrate Advertisement
+       1.4.2.  Circuit Breaker Node
+       1.4.3.  Communication Method
+       1.4.4.  Measurement Function
+       1.4.5.  Trigger Function
+       1.4.6.  Reaction
+       1.4.7.  Feedback Control Mechanism
+     1.5.  States
+       1.5.1.  Interface State
+       1.5.2.  Flow State
+     1.6.  Implementation Design Considerations
+       1.6.1.  Oversubscription Thresholds
+       1.6.2.  Fairness Functions
+   2.  YANG Module
+     2.1.  Tree Diagram
+     2.2.  Module
+   3.  IANA Considerations
+     3.1.  YANG Module Names Registry
+     3.2.  The XML Registry
+   4.  Security Considerations
+     4.1.  Metadata Security
+     4.2.  Denial of Service
+       4.2.1.  State Overload
+   5.  Acknowledgements
+   6.  References
+     6.1.  Normative References
+     6.2.  Informative References
    Appendix A.  Overjoining
    Authors' Addresses
 
@@ -122,7 +121,7 @@ Table of Contents
    composed of the messages containing the metadata required for
    operation of the CB.
 
-   CBACC is designed to supplement protocols that use multicast IP and
+   CBACC is designed to supplement protocols that use IP multicast and
    rely on well-behaved receivers to achieve congestion control.
    Examples of congestion control systems fitting this description
    include [PLM], [RLM], [RLC], [FLID-DL], [SMCC], and WEBRC [RFC3738].
@@ -142,9 +141,8 @@ Table of Contents
    Overjoining attacks and the challenges they present are discussed in
    more detail in Appendix A.
 
-   CBACC offers a solution for the recommendation in Section 4 of
-   [RFC8085] that circuit breaker solutions be used even where
-   congestion control is optional.
+   CBACC follows Section 4 of [RFC8085], which recommends the use of
+   circuit breakers even where congestion control is optional.
 
 1.1.  Background and Terminology
 
@@ -176,14 +174,8 @@ Table of Contents
 
 1.3.  Non-obvious doc choices
 
-   *  Since nothing is necessarily being actively measured by a network
-      component at the ingress, referring to the bitrate advertisement
-      as an "ingress meter" for this context was considered confusing by
-      reviewers, so the section was renamed with just a note pointing to
-      the link.  Likewise the egress meter and "CB node".
-
    *  TBD: might need more and better examples explaining the point in
-      Section 2.1.5.1?  Some reason to believe it's not sufficiently
+      Section 1.4.5.1?  Some reason to believe it's not sufficiently
       clear...
 
    *  Another TBD: consider Dino's suggestion from 2020-04-09 to include
@@ -193,7 +185,8 @@ Table of Contents
    *  TBD: add a section walking through the requirements in
       https://datatracker.ietf.org/doc/html/rfc8084#section-4
       (https://datatracker.ietf.org/doc/html/rfc8084#section-4) and
-      explaining how this matches.
+      explaining how this matches. --> The MUST in 2. does not seem to
+      fit here
 
    *  I'm unclear on whether https://datatracker.ietf.org/doc/html/
       rfc8407#section-3.8.2 (https://datatracker.ietf.org/doc/html/
@@ -201,18 +194,36 @@ Table of Contents
       augmentation inside the DORMS namespace causes an update to the
       DORMS document.
 
-2.  Circuit Breaker Behavior
+   *  TBD: What should happen if a new join would lead to exceeding the
+      capacity?  When is the data from DORMS pulled?  Probably before
+      the group gets joined.  Current behavior is quite reactive is
+      there any reason to not be proactive (as well)?
 
-2.1.  Functional Components
+   *  TBD: Should we in general move away from the circuit breaker
+      model?  It seems like there is more hassle with trying to fit it
+      than is worth
+
+   *  TBD: Should there be groups instead of priorities?  I.e., senders
+      can specify that certain groups only make sense if they are all
+      received in an all or nothing manner.  Or should there be both?
+
+   *  TBD: Discuss timescale of trigger function per Brians comments #
+      Circuit Breaker Behavior
+
+1.4.  Functional Components
 
    This section maps the functional components described in Section 3.1
    of [RFC8084] to the operational components of the CBACC CB defined by
    this document.
 
-2.1.1.  Bitrate Advertisement
+   It should be noted, that CBACC changes some of the architectural
+   assumptions made in [RFC8084], which are also detailed in the
+   following sections.
+
+1.4.1.  Bitrate Advertisement
 
    The metadata provides an advertised maximum data bit-rate, namely the
-   "max-speed" field in the YANG model in Section 3.  This is a self-
+   "max-speed" field in the YANG model in Section 2.  This is a self-
    report by the sender about the maximum amount of traffic a sender
    will send within any time interval given by the "data-rate-window"
    field, which is the measurement interval for the CB.  This value
@@ -229,16 +240,22 @@ Table of Contents
    measurement window, it MAY circuit-break that flow immediately.
 
    In the terminology of [RFC8084], the bitrate advertisement qualifies
-   as an ingress meter.
+   as an ingress meter.  It should be noted, that unlike other CBs, the
+   ingress meter does not actively measure any network traffic.  It
+   rather just requests the metadata provided by the sender.
 
-2.1.2.  Circuit Breaker Node
+1.4.2.  Circuit Breaker Node
 
    A circuit breaker node (CB node) is a location in a network where the
-   costraints of the network and the observations about active traffic
+   constraints of the network and the observations about active traffic
    are compared to the bitrate advertisement in order to make the
    decision loop about when and whether to perform the circuit breaking
    behavior.  In the terminology of [RFC8084], the CB node qualifies as
-   an egress meter.
+   an egress meter.  Unlike other CBs, the egress meter is located at
+   the same location, e.g. router, as the ingress meter.  This means
+   that while it might seem that the reaction to the trigger function is
+   applied to the egress, it is still simultaneously applied to the
+   ingress.
 
    The CB node has access to several pieces of information that can be
    used as relevant egress metrics that may include:
@@ -281,10 +298,10 @@ Table of Contents
    system or browser on a device receiving the traffic, or the receiving
    application itself.
 
-2.1.3.  Communication Method
+1.4.3.  Communication Method
 
    CBACC generally operates at a CB node, where metrics such as those
-   described in Section 2.1.2 are available through system calls, or by
+   described in Section 1.4.2 are available through system calls, or by
    communication with various locally deployable system monitoring
    applications.  However, the CBACC processing can equivalently occur
    on a separate device that can monitor statistics gathered at a CB
@@ -292,15 +309,15 @@ Table of Contents
    can be invoked.
 
    The communication path defined in this document for the CB node to
-   obtain the bitrate advertisement in Section 2.1.1 is the use of DORMS
+   obtain the bitrate advertisement in Section 1.4.1 is the use of DORMS
    [I-D.draft-ietf-mboned-dorms].  Other methods MAY be used as well or
    instead, but are out of scope for this document.
 
-2.1.4.  Measurement Function
+1.4.4.  Measurement Function
 
    The measurement function maintains a few values for each interface,
-   computed from the metrics described in Section 2.1.2 and
-   Section 2.1.1:
+   computed from the metrics described in Section 1.4.2 and
+   Section 1.4.1:
 
    1.  The aggregate advertised maximum bit-rate capacity consumed by
        CBACC data streams.  This is the sum of the max-speed values in
@@ -322,12 +339,12 @@ Table of Contents
        [PathChirp] or [CapProbe].
 
        This document covers some non-normative examples of valid
-       oversubscription threshold functions in Section 2.3.1.  In
+       oversubscription threshold functions in Section 1.6.1.  In
        general, the oversubscription threshold is the primary parameter
        that different CBs in different contexts can tune to provide the
        safety guarantees necessary for their context.
 
-2.1.5.  Trigger Function
+1.4.5.  Trigger Function
 
    The trigger function fires when the aggregate advertised maximum bit-
    rate exceeds the oversubscription threshold for any interface.
@@ -336,7 +353,7 @@ Table of Contents
    subscribed channels to "blocked" until the aggregate subscribed bit-
    rate is below the oversubscription threshold again.
 
-2.1.5.1.  Fairness and Inter-flow Ordering
+1.4.5.1.  Fairness and Inter-flow Ordering
 
    The trigger function orders the monitored flows according to a
    fairness function and a within-sender priority ordering (chosen by
@@ -386,10 +403,10 @@ Table of Contents
    Subject to the above constraints, where possible the default fairness
    behavior SHOULD favor streams with many receivers over streams with
    few receivers, and streams with a low bit-rate over streams with a
-   high bit-rate.  See Section 2.3.2 for further considerations and
+   high bit-rate.  See Section 1.6.2 for further considerations and
    examples.
 
-2.1.6.  Reaction
+1.4.6.  Reaction
 
    When the trigger function fires and a subscribed channel becomes
    blocked, the reaction depends on whether it's an upstream interface
@@ -431,9 +448,9 @@ Table of Contents
    SHOULD be unblocked according to the priority order until no more
    flows can be unblocked without exceeding the circuit breaker limits.
 
-2.1.7.  Feedback Control Mechanism
+1.4.7.  Feedback Control Mechanism
 
-   The bitrate advertisement metadata from Section 2.1.1 should be
+   The bitrate advertisement metadata from Section 1.4.1 should be
    refreshed as needed to maintain up to date values.  When using DORMS
    and RESTCONF, the Subscription to YANG Notifications for Datastore
    Updates [RFC8641] is the preferred method to receive changes if
@@ -447,9 +464,9 @@ Table of Contents
    the Cache Control or the default refresh timing to avoid
    synchronization across multiple clients.
 
-2.2.  States
+1.5.  States
 
-2.2.1.  Interface State
+1.5.1.  Interface State
 
    A CB holds the following state for each interface, for both the
    inbound and outbound directions on that interface:
@@ -469,7 +486,7 @@ Table of Contents
       be allocated to CBACC flows if the link might be shared with
       unicast traffic that is responsive to congestion.
 
-2.2.2.  Flow State
+1.5.2.  Flow State
 
    Data streams with CBACC metadata have a state for the upstream
    interface through which the stream is joined:
@@ -497,13 +514,13 @@ Table of Contents
       Indicates that data packets for this flow are NOT forwarded
       downstream via this interface.
 
-2.3.  Implementation Design Considerations
+1.6.  Implementation Design Considerations
 
-2.3.1.  Oversubscription Thresholds
+1.6.1.  Oversubscription Thresholds
 
    TBD.
 
-2.3.2.  Fairness Functions
+1.6.2.  Fairness Functions
 
    As an example fairness function that makes good sense for a general
    case of unknown traffic:
@@ -519,21 +536,21 @@ Table of Contents
    An overview of some other approaches to appropriate fairness metrics
    is given in Section 2.3 of [RFC5166].
 
-3.  YANG Module
+2.  YANG Module
 
-3.1.  Tree Diagram
+2.1.  Tree Diagram
 
    The tree diagram below follows the notation defined in [RFC8340].
 
    YANG-TREE ietf-cbacc.yang
 
-3.2.  Module
+2.2.  Module
 
    YANG-MODULE ietf-cbacc.yang
 
-4.  IANA Considerations
+3.  IANA Considerations
 
-4.1.  YANG Module Names Registry
+3.1.  YANG Module Names Registry
 
    This document adds one YANG module to the "YANG Module Names"
    registry maintained at <https://www.iana.org/assignments/yang-
@@ -545,7 +562,7 @@ Table of Contents
          prefix:    cbacc
          reference: I-D.draft-ietf-mboned-cbacc
 
-4.2.  The XML Registry
+3.2.  The XML Registry
 
    This document adds the following registration to the "ns" subregistry
    of the "IETF XML Registry" defined in [RFC3688], referencing this
@@ -555,21 +572,21 @@ Table of Contents
           Registrant Contact: The IESG.
           XML: N/A, the requested URI is an XML namespace.
 
-5.  Security Considerations
+4.  Security Considerations
 
    TBD: Yang Doctor review from Reshad said this should "mention the
    YANG data nodes".  I think this means "do what
    https://tools.ietf.org/html/rfc8407#section-3.7 says"?
 
-5.1.  Metadata Security
+4.1.  Metadata Security
 
    Be sure to authenticate the metadata.  See DORMS security
    considerations, and don't accept unauthenticated metadata if using an
    alternative means.
 
-5.2.  Denial of Service
+4.2.  Denial of Service
 
-5.2.1.  State Overload
+4.2.1.  State Overload
 
    Since CBACC flows require state, it may be possible for a set of
    receivers and/or senders, possibly acting in concert, to generate
@@ -587,16 +604,21 @@ Table of Contents
    RECOMMENDED that network operators implement measures to mitigate
    such attacks.
 
-6.  Acknowledgements
+5.  Acknowledgements
 
    Many thanks to Devin Anderson, Ben Kaduk, Cheng Jin, Scott Brown,
    Miroslav Ponec, Bob Briscoe, Lenny Giuliani, Christian Worm
    Mortensen, Dino Farinacci, and Reshad Rahman for their thoughtful
    comments and contributions.
 
-7.  References
+   Part of this work was supported by the Federal Ministry of Research,
+   Technology and Space in the programme of “Souverän.  Digital.
+   Vernetzt.” Joint project 6G-RIC, project identification number:
+   16KISK030.
 
-7.1.  Normative References
+6.  References
+
+6.1.  Normative References
 
    [I-D.draft-ietf-mboned-ambi]
               Holland, J., Rose, K., and M. Franke, "Asymmetric Manifest
@@ -637,7 +659,7 @@ Table of Contents
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
               <https://www.rfc-editor.org/rfc/rfc8340>.
 
-7.2.  Informative References
+6.2.  Informative References
 
    [CapProbe] Kapoor, R., Chen, L.-J., Lao, L., Gerla, M., and M. Y.
               Sanadidi, "CapProbe: A Simple and Accurate Capacity
