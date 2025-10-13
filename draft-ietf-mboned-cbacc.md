@@ -190,7 +190,7 @@ The CBACC metadata MAY be communicated to receivers or forwarding nodes by some 
 The CB behavior defined in this document matches the description provided in Section 3.2.3 of {{RFC8084}} of a unidirectional CB over a controlled path.
 The control messages from that description are composed of the messages containing the metadata required for operation of the CB.
 
-CBACC is designed to supplement protocols that use multicast IP and rely on well-behaved receivers to achieve congestion control.
+CBACC is designed to supplement protocols that use IP multicast and rely on well-behaved receivers to achieve congestion control.
 Examples of congestion control systems fitting this description include {{PLM}}, {{RLM}}, {{RLC}}, {{FLID-DL}}, {{SMCC}}, and WEBRC {{RFC3738}}.
 
 CBACC addresses a problem with "overjoining" by untrusted receivers.
@@ -202,7 +202,7 @@ The overjoining problem is relevant to misbehaving receivers for both receiver-d
 
 Overjoining attacks and the challenges they present are discussed in more detail in {{ref-overjoining}}.
 
-CBACC offers a solution for the recommendation in Section 4 of {{RFC8085}} that circuit breaker solutions be used even where congestion control is optional.
+CBACC follows Section 4 of {{RFC8085}}, which recommends the use of circuit breakers even where congestion control is optional.
 
 ## Background and Terminology
 
@@ -224,22 +224,33 @@ Substantial discussion of this document should take place on the MBONED working 
  * Search: https://mailarchive.ietf.org/arch/browse/mboned/
 
 ## Non-obvious doc choices
-
- * Since nothing is necessarily being actively measured by a network component at the ingress, referring to the bitrate advertisement as an "ingress meter" for this context was considered confusing by reviewers, so the section was renamed with just a note pointing to the link.  Likewise the egress meter and "CB node".
-
  * TBD: might need more and better examples explaining the point in {{ordering}}?  Some reason to believe it's not sufficiently clear...
 
  * Another TBD: consider Dino's suggestion from 2020-04-09 to include an operational considerations section that addresses some possible optimizations for CB placement and configuration.
 
- * TBD: add a section walking through the requirements in <https://datatracker.ietf.org/doc/html/rfc8084#section-4> and explaining how this matches.
+ * TBD: add a section walking through the requirements in <https://datatracker.ietf.org/doc/html/rfc8084#section-4> and explaining how this matches. --> The MUST in 2. does not seem to fit here
 
  * I'm unclear on whether <https://datatracker.ietf.org/doc/html/rfc8407#section-3.8.2> applies here, such that providing an augmentation inside the DORMS namespace causes an update to the DORMS document.
 
+ * TBD: What should happen if a new join would lead to exceeding the capacity?
+ When is the data from DORMS pulled?
+ Probably before the group gets joined.
+ Current behavior is quite reactive is there any reason to not be proactive (as well)?
+
+ * TBD: Should we in general move away from the circuit breaker model? It seems like there is more hassle with trying to fit it than is worth
+
+ * TBD: Should there be groups instead of priorities?
+ I.e., senders can specify that certain groups only make sense if they are all received in an all or nothing manner.
+ Or should there be both?
+
+* TBD: Discuss timescale of trigger function per Brians comments
 # Circuit Breaker Behavior
 
 ## Functional Components
 
 This section maps the functional components described in Section 3.1 of {{RFC8084}} to the operational components of the CBACC CB defined by this document.
+
+It should be noted, that CBACC changes some of the architectural assumptions made in {{RFC8084}}, which are also detailed in the following sections.
 
 ### Bitrate Advertisement {#bit-ad}
 
@@ -251,11 +262,15 @@ The sender MUST NOT send more data for a data stream than the amount of data dec
 If a CB node observes a higher data rate transmitted within any measurement window, it MAY circuit-break that flow immediately.
 
 In the terminology of {{RFC8084}}, the bitrate advertisement qualifies as an ingress meter.
+It should be noted, that unlike other CBs, the ingress meter does not actively measure any network traffic.
+It rather just requests the metadata provided by the sender.
 
 ### Circuit Breaker Node {#cb-node}
 
-A circuit breaker node (CB node) is a location in a network where the costraints of the network and the observations about active traffic are compared to the bitrate advertisement in order to make the decision loop about when and whether to perform the circuit breaking behavior.
+A circuit breaker node (CB node) is a location in a network where the constraints of the network and the observations about active traffic are compared to the bitrate advertisement in order to make the decision loop about when and whether to perform the circuit breaking behavior.
 In the terminology of {{RFC8084}}, the CB node qualifies as an egress meter.
+Unlike other CBs, the egress meter is located at the same location, e.g. router, as the ingress meter.
+This means that while it might seem that the reaction to the trigger function is applied to the egress, it is still simultaneously applied to the ingress.
 
 The CB node has access to several pieces of information that can be used as relevant egress metrics that may include:
 
@@ -473,6 +488,8 @@ It is RECOMMENDED that network operators implement measures to mitigate such att
 
 Many thanks to Devin Anderson, Ben Kaduk, Cheng Jin, Scott Brown, Miroslav Ponec, Bob Briscoe, Lenny Giuliani, Christian Worm Mortensen, Dino Farinacci, and Reshad Rahman for their thoughtful comments and contributions.
 
+Part of this work was supported by the Federal Ministry of Research, Technology and Space in the programme of “Souverän. Digital. Vernetzt.” Joint project 6G-RIC, project identification number: 16KISK030.
+
 --- back
 
 # Overjoining {#ref-overjoining}
@@ -498,4 +515,3 @@ By contrast, non-responsive multicast senders are likely to be well-behaved part
 
 However, receiver controlled congestion control schemes also show the most promise for efficient massive scale content distribution via multicast, provided network health can be ensured.
 Therefore, mechanisms to mitigate overjoining attacks while still permitting receiver-controlled congestion control are necessary.
-

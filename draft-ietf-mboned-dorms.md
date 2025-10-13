@@ -44,11 +44,9 @@ normative:
   RFC3596:
   RFC6020:
   RFC6241:
-  RFC6991:
   RFC7950:
   RFC8040:
   RFC8174:
-  RFC8294:
   RFC8340:
   RFC8341:
   RFC8446:
@@ -62,9 +60,9 @@ informative:
   RFC1035:
   RFC2931:
   RFC3040:
-  RFC3376:
+  RFC9776:
   RFC3688:
-  RFC3810:
+  RFC9777:
   RFC4604:
   RFC4607:
   RFC5013:
@@ -106,7 +104,7 @@ Publishing such a RR enables DORMS clients to discover and query a DORMS server 
 
 The reader is assumed to be familiar with the basic DNS concepts described in {{RFC1034}}, {{RFC1035}}, and the subsequent documents that update them, as well as the use of the SRV Resource Record type as described in {{RFC2782}}.
 
-The reader is also assumed to be familiar with the concepts and terminology regarding source-specific multicast as described in {{RFC4607}} and the use of IGMPv3 {{RFC3376}} and MLDv2 {{RFC3810}} for group management of source-specific multicast channels, as described in {{RFC4604}}.
+The reader is also assumed to be familiar with the concepts and terminology regarding source-specific multicast as described in {{RFC4607}} and the use of IGMPv3 {{RFC9776}} and MLDv2 {{RFC9777}} for group management of source-specific multicast channels, as described in {{RFC4604}}.
 
 The reader is also assumed to be familiar with the concepts and terminology for RESTCONF {{RFC8040}} and YANG {{RFC7950}}.
 
@@ -504,7 +502,7 @@ A denial-of-service attack of this sort would be thwarted by restricting the acc
 In the typical case, the mechanisms defined in this document provide a standardized way to discover information that is already available in other ways.
 
 However, depending on the metadata provided by the server, observers may be able to more easily associate traffic from an (S,G) with the content contained within the (S,G).
-At the subscriber edge of a multicast-capable network, where the network operator has the capability to localize an IGMP {{RFC3376}} or MLD {{RFC3810}} channel subscription to a specific user or location, for example by MAC address or source IP address, the structured publishing of metadata may make it easier to automate collection of data about the content a receiver is consuming.
+At the subscriber edge of a multicast-capable network, where the network operator has the capability to localize an IGMP {{RFC9776}} or MLD {{RFC9777}} channel subscription to a specific user or location, for example by MAC address or source IP address, the structured publishing of metadata may make it easier to automate collection of data about the content a receiver is consuming.
 
 ## Linking Multicast Subscribers to Unicast Connections
 
@@ -594,3 +592,5 @@ The following registrations are made, per the format in Section 8.1.1 of {{RFC63
 # Acknowledgements
 
 Thanks to Christian Worm Mortensen, Dino Farinacci, Lenny Guiliano, and Reshad Rahman for their very helpful comments and reviews.
+
+Part of this work was supported by the Federal Ministry of Research, Technology and Space in the programme of “Souverän. Digital. Vernetzt.” Joint project 6G-RIC, project identification number: 16KISK030.

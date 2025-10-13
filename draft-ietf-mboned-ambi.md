@@ -661,7 +661,9 @@ This mitigation prevents new forwarding of multicast traffic from providing atta
 
 # Acknowledgements
 
-Many thanks to Daniel Franke, Eric Rescorla, Christian Worm Mortensen, Max Franke, Albert Manfredi, and Amanda Baber for their very helpful comments and suggestions.
+Many thanks to Daniel Franke, Eric Rescorla, Christian Worm Mortensen, Albert Manfredi, and Amanda Baber for their very helpful comments and suggestions.
+
+Part of this work was supported by the Federal Ministry of Research, Technology and Space in the programme of “Souverän. Digital. Vernetzt.” Joint project 6G-RIC, project identification number: 16KISK030.
 
 --- back
 
