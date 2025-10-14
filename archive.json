@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-21T01:26:28.924150+00:00",
+  "timestamp": "2025-10-14T01:19:34.855356+00:00",
   "repo": "GrumpyOldTroll/ietf-dorms-cluster",
   "labels": [
     {
@@ -902,6 +902,34 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 36,
+      "id": "PR_kwDOEmn6ks6tiyrj",
+      "title": "Brians CBACC comments + some more + idnits on DORMS",
+      "url": "https://github.com/GrumpyOldTroll/ietf-dorms-cluster/pull/36",
+      "state": "MERGED",
+      "author": "MaxF12",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-10-13T21:39:46Z",
+      "updatedAt": "2025-10-13T22:53:24Z",
+      "baseRepository": "GrumpyOldTroll/ietf-dorms-cluster",
+      "baseRefName": "master",
+      "baseRefOid": "064633d287797358008ce84f5d39229ca0935d7e",
+      "headRepository": "MaxF12/ietf-dorms-cluster",
+      "headRefName": "CBACC",
+      "headRefOid": "f0ea13145e44be160413a7e58573b9da82af88ff",
+      "closedAt": "2025-10-13T22:53:24Z",
+      "mergedAt": "2025-10-13T22:53:24Z",
+      "mergedBy": "squarooticus",
+      "mergeCommit": {
+        "oid": "a26117e685fb4879a90b1fe6a890ad39b5ea3ab0"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
