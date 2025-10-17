@@ -5,9 +5,9 @@
 Mboned                                                        J. Holland
 Internet-Draft                                                   K. Rose
 Intended status: Standards Track               Akamai Technologies, Inc.
-Expires: 19 March 2026                                         M. Franke
+Expires: 20 April 2026                                         M. Franke
                                                                TU Berlin
-                                                       15 September 2025
+                                                         17 October 2025
 
 
       Discovery Of Restconf Metadata for Source-specific multicast
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 March 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -141,7 +141,7 @@ Table of Contents
 
    The reader is also assumed to be familiar with the concepts and
    terminology regarding source-specific multicast as described in
-   [RFC4607] and the use of IGMPv3 [RFC3376] and MLDv2 [RFC3810] for
+   [RFC4607] and the use of IGMPv3 [RFC9776] and MLDv2 [RFC9777] for
    group management of source-specific multicast channels, as described
    in [RFC4604].
 
@@ -742,7 +742,7 @@ Table of Contents
    may be able to more easily associate traffic from an (S,G) with the
    content contained within the (S,G).  At the subscriber edge of a
    multicast-capable network, where the network operator has the
-   capability to localize an IGMP [RFC3376] or MLD [RFC3810] channel
+   capability to localize an IGMP [RFC9776] or MLD [RFC9777] channel
    subscription to a specific user or location, for example by MAC
    address or source IP address, the structured publishing of metadata
    may make it easier to automate collection of data about the content a
@@ -886,6 +886,11 @@ Table of Contents
    Thanks to Christian Worm Mortensen, Dino Farinacci, Lenny Guiliano,
    and Reshad Rahman for their very helpful comments and reviews.
 
+   Part of this work was supported by the Federal Ministry of Research,
+   Technology and Space in the programme of “Souverän.  Digital.
+   Vernetzt.” Joint project 6G-RIC, project identification number:
+   16KISK030.
+
 9.  References
 
 9.1.  Normative References
@@ -920,10 +925,6 @@ Table of Contents
               (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
               <https://www.rfc-editor.org/rfc/rfc6241>.
 
-   [RFC6991]  Schoenwaelder, J., Ed., "Common YANG Data Types",
-              RFC 6991, DOI 10.17487/RFC6991, July 2013,
-              <https://www.rfc-editor.org/rfc/rfc6991>.
-
    [RFC7950]  Bjorklund, M., Ed., "The YANG 1.1 Data Modeling Language",
               RFC 7950, DOI 10.17487/RFC7950, August 2016,
               <https://www.rfc-editor.org/rfc/rfc7950>.
@@ -935,11 +936,6 @@ Table of Contents
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
-
-   [RFC8294]  Liu, X., Qu, Y., Lindem, A., Hopps, C., and L. Berger,
-              "Common YANG Data Types for the Routing Area", RFC 8294,
-              DOI 10.17487/RFC8294, December 2017,
-              <https://www.rfc-editor.org/rfc/rfc8294>.
 
    [RFC8340]  Bjorklund, M. and L. Berger, Ed., "YANG Tree Diagrams",
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
@@ -1006,19 +1002,9 @@ Table of Contents
               DOI 10.17487/RFC3040, January 2001,
               <https://www.rfc-editor.org/rfc/rfc3040>.
 
-   [RFC3376]  Cain, B., Deering, S., Kouvelas, I., Fenner, B., and A.
-              Thyagarajan, "Internet Group Management Protocol, Version
-              3", RFC 3376, DOI 10.17487/RFC3376, October 2002,
-              <https://www.rfc-editor.org/rfc/rfc3376>.
-
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
               <https://www.rfc-editor.org/rfc/rfc3688>.
-
-   [RFC3810]  Vida, R., Ed. and L. Costa, Ed., "Multicast Listener
-              Discovery Version 2 (MLDv2) for IPv6", RFC 3810,
-              DOI 10.17487/RFC3810, June 2004,
-              <https://www.rfc-editor.org/rfc/rfc3810>.
 
    [RFC4604]  Holbrook, H., Cain, B., and B. Haberman, "Using Internet
               Group Management Protocol Version 3 (IGMPv3) and Multicast
@@ -1059,6 +1045,15 @@ Table of Contents
               Transaction Authentication for DNS (TSIG)", STD 93,
               RFC 8945, DOI 10.17487/RFC8945, November 2020,
               <https://www.rfc-editor.org/rfc/rfc8945>.
+
+   [RFC9776]  Haberman, B., Ed., "Internet Group Management Protocol,
+              Version 3", STD 100, RFC 9776, DOI 10.17487/RFC9776, March
+              2025, <https://www.rfc-editor.org/rfc/rfc9776>.
+
+   [RFC9777]  Haberman, B., Ed., "Multicast Listener Discovery Version 2
+              (MLDv2) for IPv6", STD 101, RFC 9777,
+              DOI 10.17487/RFC9777, March 2025,
+              <https://www.rfc-editor.org/rfc/rfc9777>.
 
 Authors' Addresses
 

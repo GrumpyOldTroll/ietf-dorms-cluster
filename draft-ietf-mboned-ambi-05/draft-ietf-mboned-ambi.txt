@@ -5,9 +5,9 @@
 Mboned                                                        J. Holland
 Internet-Draft                                                   K. Rose
 Intended status: Standards Track               Akamai Technologies, Inc.
-Expires: 19 March 2026                                         M. Franke
+Expires: 20 April 2026                                         M. Franke
                                                                TU Berlin
-                                                       15 September 2025
+                                                         17 October 2025
 
 
                   Asymmetric Manifest Based Integrity
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 March 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -1032,8 +1032,13 @@ Table of Contents
 9.  Acknowledgements
 
    Many thanks to Daniel Franke, Eric Rescorla, Christian Worm
-   Mortensen, Max Franke, Albert Manfredi, and Amanda Baber for their
-   very helpful comments and suggestions.
+   Mortensen, Albert Manfredi, and Amanda Baber for their very helpful
+   comments and suggestions.
+
+   Part of this work was supported by the Federal Ministry of Research,
+   Technology and Space in the programme of “Souverän.  Digital.
+   Vernetzt.” Joint project 6G-RIC, project identification number:
+   16KISK030.
 
 10.  References
 
