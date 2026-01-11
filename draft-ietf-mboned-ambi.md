@@ -272,6 +272,8 @@ Since packet digests are usually smaller than the data packets, it's RECOMMENDED
 
 This strategy reduces the buffering requirements at receivers, at the cost of introducing some buffering of data packets at the sender, since data packets are generated before their packet digests can be added to manifests.
 
+Should an application rely on preserving the inter-packet gap, it's RECOMMENDED that the buffer time on the sender side is further increased. This ensures that middle boxes already have the corresponding digest when a data packet arrives, allowing them to authenticate and forward it immediately.
+
 The RECOMMENDED default hold times at receivers are:
 
   * 2 seconds for data packets
@@ -281,24 +283,12 @@ The sender MAY recommend different values for specific data streams, in order to
 The YANG model in {{ref-yang}} provides a mechanism for senders to communicate the sender's recommendation for buffering durations.
 These parameters are "data-hold-time" and "digest-hold-time", expressed in milliseconds.
 
-Receivers MAY deviate from the values recommended by the sender for a variety of reasons, including their own memory constraints or local administrative configuration (for example, it might improve user experience in some situations to hold packets longer than the server recommended when there are receiver-specific delays in the manifest stream that exceed the server's expectations).
+Receivers SHOULD follow the recommendations for hold times provided by the sender, including the default values when unspecified. Reasons that might lead receivers to deviate could include their own memory constraints or local administrative configuration (for example, it might improve user experience in some situations to hold packets longer than the server recommended when there are receiver-specific delays in the manifest stream that exceed the server's expectations).
 Decreasing the buffering durations recommended by the server increases the risk of losing packets, but can be an appropriate tradeoff for specific network conditions and hardware or memory constraints on some devices.
 
-Receivers SHOULD follow the recommendations for hold times provided by the sender (including the default values from the YANG model when unspecified), subject to their capabilities and any administratively configured overrides at the receiver.
+Middle boxes SHOULD always authenticate and forward data packets as soon as possible, even if it causes a reordering of packets.
 
-### Preserving Inter-packet Gap
-
-It's RECOMMENDED that middle boxes forwarding buffered data packets preserve the inter-packet gap between packets in the same data stream, and that receiving libraries that perform AMBI-based authentication provide mechanisms to expose the network arrival times of packets to applications.
-
-The purpose for this recommendation is to preserve the capability of receivers to use techniques for available bandwidth detection or network congestion based on observation of packet times and packet dispersal, making use of known patterns in the sending.
-Examples of such techniques include those described in {{PathChirp}}, {{PathRate}}, and {{WEBRC}}.
-
-Note that this recommendation SHOULD NOT prevent the transmission of an authenticated packet because the prior packet is unauthenticated.
-This recommendation only asks implementations to delay the transmission of an authenticated packet to correspond to the interpacket gap if an authenticated packet was previously transmitted and the authentication of the subsequent packet would otherwise burst the packets more quickly.
-
-This does not prevent the transmission of packets out of order according to their order of authentication, only the timing of packets that are transmitted, after authentication, in the same order they were received.
-
-For receiver applications, the time that the original packet was received from the network SHOULD be made available to the receiving application.
+On receivers, the time that the original packet was received from the network SHOULD be made available to the application.
 
 ## Manifests {#ref-manifest}
 Each manifest has the following format:
