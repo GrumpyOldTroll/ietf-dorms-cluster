@@ -632,12 +632,14 @@ TBD: register 'ambi+dtls' as a uri scheme according to advice from: <https://dat
 
 # Security Considerations {#ref-security}
 
-## Predictable Packets
+## Collision Attacks
 
-Protocols that have predictable packets run the risk of offline attacks for hash collisions against those packets.
-When authenticating a protocol that might have predictable packets, it's RECOMMENDED to use a hash function secure against such attacks or to add content to the packets to make them unpredictable, such as an Authentication Header ({{RFC4302}}), or the addition of an ignored field with random content to the packet payload.
+As the packet digests are usually sent before the packets themselves, it is possible for an attacker to perform a collision attack to generate a malicious packet that has a valid digest. The attacker can then send this packet to the (S,G) and it could still arrive before the original packet.
+The client would then authenticate the malicious packet, mistaking it for a legitimate one.
 
-TBD: explain attack from generating malicious packets and then looking for collisions, as opposed to having to generate a collision on packet contents that include a sequence number and then hitting a match.
+Attackers might also generate malicious packets in advance and wait for a packet digest that matches them.
+
+To prevent these exploits, the hash function used MUST be secure against collision attacks.
 
 TBD: follow the rest of the guidelines: https://tools.ietf.org/html/rfc3552
 
